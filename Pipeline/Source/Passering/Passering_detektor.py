@@ -41,7 +41,6 @@ def velg_mappe(output_path):
         print(f"Mappe '{mappe_plassering}' eksisterer ikke, lager ny.")
         return lag_ny_mappe(output_path)
         
-
 # VISER Ai deteksjon boks rundt bilene men de popper opp i eget vindu.
 # Relevante imports
 # from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -65,7 +64,6 @@ def lag_bilde_med_boks(image, bboxes):
     boks_bilde = Image.fromarray(cv2.cvtColor(boks_bilde, cv2.COLOR_RGB2BGR))
 
     return boks_bilde
-
 
 # Funksjon for å gjenkjenne og lagre bilder med biler
 def detect_and_save(image_path, output_path):
