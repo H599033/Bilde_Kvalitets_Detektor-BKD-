@@ -41,7 +41,7 @@ def velg_mappe(output_path):
         print(f"Mappe '{mappe_plassering}' eksisterer ikke, lager ny.")
         return lag_ny_mappe(output_path)
         
-# VISER Ai deteksjon boks rundt bilene men de popper opp i eget vindu.
+# VISER Ai deteksjon boks rundt bilene
 # Relevante imports
 # from matplotlib.backends.backend_agg import FigureCanvasAgg
 # import numpy as np
@@ -75,9 +75,14 @@ def detect_and_save(image_path, output_path):
     # Velger mappe. Brukes i telfelle ny mappe blir laget ved ny bil som passerer
     mappe_sti = velg_mappe(output_path)
     
+
+    #--------Midler tidig kode for telling av forskjellige biler brukes for testing.----------
+
     # Gjennomfør prediksjon
     with torch.no_grad():
         predictions = model(image_tensor)
+
+
 
     # Filtrere ut bokser med høy sannsynlighet for å inneholde biler
     threshold = 0.9  # Juster terskelen etter behov
@@ -99,6 +104,12 @@ def detect_and_save(image_path, output_path):
             _tomm_ny_mappe = True
         print("Ingen biler ble funnet på dette bildet.")
 
+
+
+
+
+# Eksempel på bruk med et bilde
+
 # Kjør funksjonen for hvert bilde
 image_folder = "Pipeline/Resourses/Input_sources"
 output_folder = "Pipeline/Resourses/Output_sources"
@@ -106,6 +117,6 @@ output_folder = "Pipeline/Resourses/Output_sources"
 for image_file in os.listdir(image_folder):
     if image_file.endswith(('.png', '.jpg', '.jpeg')):
         image_path = os.path.join(image_folder, image_file)
-        detect_and_save(image_path, output_folder)
+        detect_and_save("Pipeline/Resourses/Input_sources/Car passing by in a Highway - Royalty Free Stock Video _ (Copyright Free) Download.mp4", output_folder)
 
 #"/Users/oyvstokke-ter/DropboxMac/DocumentsGitHub/Bilde_Kvalitets_Detektor-BKD-/Pipeline/Source/Passering/Video_Slicer.py
