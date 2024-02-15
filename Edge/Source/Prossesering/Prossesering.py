@@ -25,6 +25,14 @@ def lag_alle_bil_objekt():
             _antall_Biler+=1
             bil_objekt.lagre_til_fil(ny_objekt_fil(_Intern_database_sti, _antall_Biler))
 
+def lag_bil_objekt (sted, _mappe_sti):
+    return Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
+
+def lag_bilde_sti_liste(mappe_sti):
+    bildeliste = os.listdir(mappe_sti)
+    bildeliste = [os.path.join(mappe_sti, fil) for fil in bildeliste if fil.lower().endswith(('.jpg', '.jpeg', '.png'))]
+    return bildeliste
+
 def ny_objekt_fil(inter_database_sti,bil_ID ):
     filnavn = f"bild_id_{bil_ID}.pkl"
     filbane = os.path.join(inter_database_sti, filnavn)
@@ -40,14 +48,10 @@ def slett_mappe(mappe_sti):
         print("Finner ikke mappe")
 
 #Kan ikke lagre selve bildene i lag med objektet. så lager en liste av stien til bildene i stede.
-def lag_bilde_sti_liste(mappe_sti):
-    bildeliste = os.listdir(mappe_sti)
-    bildeliste = [os.path.join(mappe_sti, fil) for fil in bildeliste if fil.lower().endswith(('.jpg', '.jpeg', '.png'))]
-    return bildeliste
 
 
-def lag_bil_objekt (sted, _mappe_sti):
-    return Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
+
+
 
 
 #-------------------------------TEST-----------------------------
@@ -59,7 +63,7 @@ def lag_bil_objekt (sted, _mappe_sti):
 
 #lag_alle_bil_objekt()
 lag_alle_bil_objekt()
-fil = "Pipeline/Resourses/Intern_database/bild_id_2.pkl" # Endre på denne etter behov. henter direkte objekt filen.
+fil = "Pipeline/Resourses/Intern_database/bild_id_2.pkl" # Endre etter behov. henter direkte objekt filen.
 def laste_fra_fil(filnavn):
         with open(filnavn, 'rb') as fil:
             return pickle.load(fil)     

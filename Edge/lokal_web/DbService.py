@@ -2,13 +2,9 @@ import os
 import pickle
 import sys
 sys.path.append('Edge/Source')
-import Edge
-
 
 
 _intern_database = "Edge/Resourses/Intern_database"
-print(f"In module Db_service: __package__ = {__package__}, __name__ = {__name__}")
-
 
 def hent_alle_biler():
     bil_liste = []
@@ -27,8 +23,9 @@ def laste_fra_fil2(filnavn):
     else:
         print(f"Filen '{filnavn}' eksisterer ikke.")
         return None  # Eller en annen håndtering av feilen
-    
+
 print("hei")
 for element in hent_alle_biler():
     if element:
         print(element.ID)
+
