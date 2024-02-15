@@ -3,9 +3,9 @@ import cv2
 import Passering_detektor
 
 # Endre denne stien til videoen din
-video_path = "Pipeline/Resourses/Input_sources/Car passing by in a Highway - Royalty Free Stock Video _ (Copyright Free) Download.mp4"
-output_folder = "Pipeline/Resourses/Output_sources"
-temp_images_folder = "Pipeline/Resourses/Temp_sources"
+video_path = "Prosjekt/Resourses/Input_sources/Car passing by in a Highway - Royalty Free Stock Video _ (Copyright Free) Download.mp4"
+output_folder = "Prosjekt/Resourses/Output_sources"
+temp_images_folder = "Prosjekt/Resourses/Temp_sources"
 
 # Åpne videofilen
 cap = cv2.VideoCapture(video_path)

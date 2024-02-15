@@ -1,6 +1,7 @@
 import os
 import pickle
 
+
 class Bil:
     # Konstruktør bil, bør legge til 2 bilde variabler, en for prosessert bilder, en uten.
     def __init__(self, sted, orginal_bilder, redigerte_bilder=None, ID=None, tid=None, dato=None, motion_blur=False, lav_belysning=False, urent_kamera=False):

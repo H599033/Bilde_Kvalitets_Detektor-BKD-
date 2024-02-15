@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append('Pipeline/Source')
+sys.path.append('Prosjekt/Edge')
 from Objekt import Bil
 import shutil
 
@@ -9,10 +9,10 @@ import pickle
 import matplotlib.pyplot as plt
 from PIL import Image
 
-_output_mappe_sti = "Pipeline/Resourses/Output_sources"
+_output_mappe_sti = "Prosjekt/Resourses/Output_sources"
 
-# Her kan vi endre hvor "databasen" våres er lagret. # kanskje litt dumt å ha den som en del av pipeline?
-_Intern_database_sti = "Pipeline/Resourses/Intern_database" 
+# Her kan vi endre hvor "databasen" våres er lagret. # kanskje litt dumt å ha den som en del av Prosjekt?
+_Intern_database_sti = "Prosjekt/Resourses/Intern_database" 
 _antall_Biler = 0
 
 def lag_alle_bil_objekt():
@@ -28,6 +28,7 @@ def lag_alle_bil_objekt():
 def lag_bil_objekt (sted, _mappe_sti):
     return Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
 
+#Kan ikke lagre selve bildene i lag med objektet. så lager en liste av stien til bildene i stede.
 def lag_bilde_sti_liste(mappe_sti):
     bildeliste = os.listdir(mappe_sti)
     bildeliste = [os.path.join(mappe_sti, fil) for fil in bildeliste if fil.lower().endswith(('.jpg', '.jpeg', '.png'))]
@@ -47,10 +48,6 @@ def slett_mappe(mappe_sti):
     else:
         print("Finner ikke mappe")
 
-#Kan ikke lagre selve bildene i lag med objektet. så lager en liste av stien til bildene i stede.
-
-
-
 
 
 
@@ -63,7 +60,7 @@ def slett_mappe(mappe_sti):
 
 #lag_alle_bil_objekt()
 lag_alle_bil_objekt()
-fil = "Pipeline/Resourses/Intern_database/bild_id_2.pkl" # Endre etter behov. henter direkte objekt filen.
+fil = "Prosjekt/Resourses/Intern_database/bild_id_2.pkl" # Endre etter behov. henter direkte objekt filen.
 def laste_fra_fil(filnavn):
         with open(filnavn, 'rb') as fil:
             return pickle.load(fil)     

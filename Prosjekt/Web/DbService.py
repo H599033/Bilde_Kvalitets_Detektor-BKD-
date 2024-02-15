@@ -1,10 +1,9 @@
 import os
 import pickle
 import sys
-sys.path.append('Edge/Source')
+sys.path.append('Prosjekt/Edge')
 
-
-_intern_database = "Edge/Resourses/Intern_database"
+_intern_database = "Prosjekt/Resourses/Intern_database"
 
 def hent_alle_biler():
     bil_liste = []
