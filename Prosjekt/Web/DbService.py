@@ -3,7 +3,10 @@ import pickle
 import sys
 sys.path.append('Prosjekt/Edge')
 
-_intern_database = "Prosjekt/Resourses/Intern_database"
+project_root = "Prosjekt"
+
+# Oppdater stien ved å bruke os.path.join
+_intern_database = os.path.join(project_root, "Resourses", "Intern_database")
 
 def hent_alle_biler():
     bil_liste = []

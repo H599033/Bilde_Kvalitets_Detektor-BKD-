@@ -9,10 +9,12 @@ import pickle
 import matplotlib.pyplot as plt
 from PIL import Image
 
-_output_mappe_sti = "Prosjekt/Resourses/Output_sources"
+project_root = "Prosjekt"
 
-# Her kan vi endre hvor "databasen" våres er lagret. # kanskje litt dumt å ha den som en del av Prosjekt?
-_Intern_database_sti = "Prosjekt/Resourses/Intern_database" 
+# Oppdater stiene ved å bruke os.path.join
+_output_mappe_sti = os.path.join(project_root, "Resourses", "Output_sources")
+_Intern_database_sti = os.path.join(project_root, "Resourses", "Intern_database")
+
 _antall_Biler = 0
 
 def lag_alle_bil_objekt():
@@ -28,7 +30,7 @@ def lag_alle_bil_objekt():
 def lag_bil_objekt (sted, _mappe_sti):
     return Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
 
-#Kan ikke lagre selve bildene i lag med objektet. så lager en liste av stien til bildene i stede.
+
 def lag_bilde_sti_liste(mappe_sti):
     bildeliste = os.listdir(mappe_sti)
     bildeliste = [os.path.join(mappe_sti, fil) for fil in bildeliste if fil.lower().endswith(('.jpg', '.jpeg', '.png'))]
