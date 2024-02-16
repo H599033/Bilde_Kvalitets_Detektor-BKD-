@@ -19,7 +19,7 @@ _tomm_ny_mappe = True
 def lag_ny_mappe (output_path):
     global _bilnr
     _bilnr += 1
-    ny_mappe_navn = "Bilnr:_" +str(_bilnr)
+    ny_mappe_navn = "Bilnr_" +str(_bilnr)
     plassering_path = output_path
     ny_mappe_sti = os.path.join(plassering_path, ny_mappe_navn)
 
@@ -32,7 +32,7 @@ def lag_ny_mappe (output_path):
     return ny_mappe_sti
 
 def velg_mappe(output_path):
-    mappe_plassering = os.path.abspath(output_path )+ "/Bilnr:_" +str(_bilnr)
+    mappe_plassering = os.path.abspath(output_path )+ "/Bilnr_" +str(_bilnr)
     if os.path.exists(mappe_plassering):
         return  mappe_plassering
         print(f"Mappe '{mappe_plassering}' er valgt.")
@@ -100,8 +100,11 @@ def detect_and_save(image_path, output_path):
         print("Ingen biler ble funnet på dette bildet.")
 
 # Kjør funksjonen for hvert bilde
-image_folder = "Prosjekt/Resourses/Input_sources"
-output_folder = "Prosjekt/Resourses/Output_sources"
+project_root = "Prosjekt"
+
+# Oppdater stiene ved å bruke os.path.join
+image_folder = os.path.join(project_root, "Resourses", "Input_sources")
+output_folder = os.path.join(project_root, "Resourses", "Output_sources")
 
 for image_file in os.listdir(image_folder):
     if image_file.endswith(('.png', '.jpg', '.jpeg')):

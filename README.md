@@ -2,7 +2,19 @@
  Nettside som kvalifiserer kvaliteten og korigerer bilder for bruk av dekk gjenkjenning
 
 
-#-------------------------------TEST-----------------------------
+
+----------------------------Nødvendige innstalasjoner--------------
+
+1. Python 3.11.7 https://www.python.org/download
+2. gå på View -> comandpallet -> Python create envierment -> venv -> versjn 3.11.7
+    I terminal HUSK å åpne Python terminal Ikke Power shel. sjekk med å skrive "python --version"
+3. "pip install opencv-python" Laster ned cv2 for video_slicer
+4. "pip install torch" for pytorch
+5. "pip install torchvision"
+6. "pip install flask" for flask Rammeverk for web.
+7. "pip install matplotlib" 
+ 
+-------------------------------TEST-----------------------------
 # 1. 
 # Før testing sørg først for at mappen Prosjekt.Resourses inne holder de 4 mappene. Input_sources , Intern_database, Output_source og Temp_source. Hvis de ikke eksiterer lag ny mappe med disse navnene. 
 
@@ -18,3 +30,4 @@
 
 # 4
 # Nå kan eventuelt DbService.py bli kjørt. (Prosjekt/Web)
+
