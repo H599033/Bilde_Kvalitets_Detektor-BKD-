@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $.getJSON("/display", function(data){
+        $.each(data, function(key, value){
+            $("body").append("<h1>" + value.ID + "</h1>");
+            $("body").append("<p>Sted: " + value.sted + "</p>");
+            $("body").append("<p>Tid: " + value.tid + "</p>");
+            $("body").append("<p>Dato: " + value.dato + "</p>");
+            $("body").append("<p>Orginal Bilder: " + value.orginal_bilder.join(", ") + "</p>");
+            $("body").append("<p>Redigerte Bilder: " + value.redigerte_bilder.join(", ") + "</p>");
+        });
+    });
+});
+</script>
+</body>
+</html>
