@@ -1,19 +1,45 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('serve_css', filename='index.css') }}">
+</head>
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
     $.getJSON("/display", function(data){
+        var table = $("<table></table>");
         $.each(data, function(key, value){
-            $("body").append("<h1>" + value.ID + "</h1>");
-            $("body").append("<p>Sted: " + value.sted + "</p>");
-            $("body").append("<p>Tid: " + value.tid + "</p>");
-            $("body").append("<p>Dato: " + value.dato + "</p>");
-            $("body").append("<p>Orginal Bilder: " + value.orginal_bilder.join(", ") + "</p>");
-            $("body").append("<p>Redigerte Bilder: " + value.redigerte_bilder.join(", ") + "</p>");
+            var row = $("<tr></tr>");
+            row.append("<td><h1>" + value.ID + "</h1></td>");
+            row.append("<td><p>Sted: " + value.sted + "</p></td>");
+            row.append("<td><p>Tid: " + value.tid + "</p></td>");
+            row.append("<td><p>Dato: " + value.dato + "</p></td>");
+            var imgCell = $("<td></td>");
+            var select = $("<select class='image-selector'></select>");
+            $.each(value.orginal_bilder, function(i, img){
+                select.append("<option value='" + img + "'>Image " + (i+1) + "</option>");
+            });
+            imgCell.append(select);
+            imgCell.append("<img class='selected-image' src='" + value.orginal_bilder[0] + "' alt='Orginal Bilder'>");
+            row.append(imgCell);
+            var redImgCell = $("<td></td>");
+            var redSelect = $("<select class='image-selector'></select>");
+            $.each(value.redigerte_bilder, function(i, img){
+                redSelect.append("<option value='" + img + "'>Image " + (i+1) + "</option>");
+            });
+            redImgCell.append(redSelect);
+            redImgCell.append("<img class='selected-image' src='" + value.redigerte_bilder[0] + "' alt='Redigerte Bilder'>");
+            row.append(redImgCell);
+            table.append(row);
         });
+        $("body").append(table);
     });
+});
+
+$(document).on('change', '.image-selector', function() {
+    var selectedImage = $(this).val();
+    $(this).siblings('.selected-image').attr('src', selectedImage);
 });
 </script>
 </body>
