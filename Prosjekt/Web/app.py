@@ -43,7 +43,9 @@ def serve_image(filename):
 def serve_css(filename):
     return send_file(os.path.join('templates', filename), mimetype='text/css')
 
-
+@app.route('/logo/<path:filename>')
+def serve_logo(filename):
+    return send_file(os.path.join('templates', filename), mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(debug=True)
