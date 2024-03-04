@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{{ url_for('serve_css', filename='index.css') }}">
 </head>
-<body style="background-color: rgb(35, 31, 36);">
+<body style="background-color: rgb(40, 39, 39);">
     <header style="text-align: left;">
         <img src="/logo/logo2.png" alt="Logo">
     </header>
@@ -13,12 +13,20 @@
         $(document).ready(function(){
             $.getJSON("/display", function(data){
                 var table = $("<table></table>");
+                var headerRow = $("<tr></tr>");
+                headerRow.append("<th>ID</th>");
+                headerRow.append("<th>Sted</th>");
+                headerRow.append("<th>Tid</th>");
+                headerRow.append("<th>Dato</th>");
+                headerRow.append("<th>Orginal Bilder</th>");
+                headerRow.append("<th>Redigerte Bilder</th>");
+                table.append(headerRow);
                 $.each(data, function(key, value){
                     var row = $("<tr></tr>");
-                    row.append("<td><h1>" + value.ID + "</h1></td>");
-                    row.append("<td><p>Sted: " + value.sted + "</p></td>");
-                    row.append("<td><p>Tid: " + value.tid + "</p></td>");
-                    row.append("<td><p>Dato: " + value.dato + "</p></td>");
+                    row.append("<td><p>" + value.ID + "</p></td>");
+                    row.append("<td><p>" + value.sted + "</p></td>");
+                    row.append("<td><p>" + value.tid + "</p></td>");
+                    row.append("<td><p>" + value.dato + "</p></td>");
                     var imgCell = $("<td></td>");
                     var select = $("<select class='image-selector'></select>");
                     $.each(value.orginal_bilder, function(i, img){
