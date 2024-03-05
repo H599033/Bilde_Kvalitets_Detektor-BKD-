@@ -18,6 +18,7 @@
                 headerRow.append("<th>Sted</th>");
                 headerRow.append("<th>Tid</th>");
                 headerRow.append("<th>Dato</th>");
+                headerRow.append("<th>Kvalitet</th>");
                 headerRow.append("<th>Orginal Bilder</th>");
                 headerRow.append("<th>Redigerte Bilder</th>");
                 table.append(headerRow);
@@ -27,6 +28,7 @@
                     row.append("<td><p>" + value.sted + "</p></td>");
                     row.append("<td><p>" + value.tid + "</p></td>");
                     row.append("<td><p>" + value.dato + "</p></td>");
+                    row.append("<td><p>" + value.motion_blur + value.lav_belysning + value.urent_kamera + "</p></td>");
                     var imgCell = $("<td></td>");
                     var select = $("<select class='image-selector'></select>");
                     $.each(value.orginal_bilder, function(i, img){

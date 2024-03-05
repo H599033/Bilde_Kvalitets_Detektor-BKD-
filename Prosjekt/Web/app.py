@@ -30,7 +30,7 @@ def display():
         })
     
     return jsonify(data)
-
+#TODO kanskje legge til egen DbService funksjon
 @app.route('/image/<path:filename>')
 def serve_image(filename):
     base_dir = os.path.abspath(os.path.dirname(__file__))
