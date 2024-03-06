@@ -17,6 +17,7 @@
     <div id="content" style="background-color: LightGray;">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
+            // #TODO DEL OPP I EGEN "index.js" fil 
             $(document).ready(function () {
                 $('#filterDropdown').on('change', function () {
                     var value = $(this).val().toLowerCase();
@@ -57,9 +58,8 @@
                         row.append("<td><p>" + value.sted + "</p></td>");
                         row.append("<td><p>" + value.tid + "</p></td>");
                         row.append("<td><p>" + value.dato + "</p></td>");
-                        //row.append("<td><p>" + Boolean(value.motion_blur) + " " + Boolean(value.lav_belysning) + " " +  Boolean(value.urent_kamera) + "</p></td>");
+                        //row.append("<td><p>" + Boolean(value.motion_blur) + "</p></td>"); BYTT DENNE MED DATO FOR TEST AV FALSE/TRUE
                         // Create a variable to store the HTML string
-                        
                         var qualityIndicator = "";
                         if (Boolean(value.motion_blur) == true) {
                             qualityIndicator += "Motion blur: " + "<p style='color:red;'>✖</p>";
