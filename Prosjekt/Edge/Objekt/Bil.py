@@ -24,3 +24,6 @@ class Bil:
     def laste_fra_fil(filnavn):
         with open(filnavn, 'rb') as fil:
             return pickle.load(fil)
+
+    def hent_bilde_en(self):
+        return self.orginal_bilder[0]

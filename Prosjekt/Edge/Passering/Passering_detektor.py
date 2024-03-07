@@ -15,11 +15,12 @@ model = fasterrcnn_resnet50_fpn(weights='COCO_V1')
 model.eval()
 _bilnr =  0
 _tomm_ny_mappe = True
+_threshold = 0.9
 #lager ny mappe for hver bil
 def lag_ny_mappe (output_path):
     global _bilnr
     _bilnr += 1
-    ny_mappe_navn = "Bilnr_" +str(_bilnr)
+    ny_mappe_navn = "Bilnr:_" +str(_bilnr)
     plassering_path = output_path
     ny_mappe_sti = os.path.join(plassering_path, ny_mappe_navn)
 
@@ -32,7 +33,7 @@ def lag_ny_mappe (output_path):
     return ny_mappe_sti
 
 def velg_mappe(output_path):
-    mappe_plassering = os.path.abspath(output_path )+ "/Bilnr_" +str(_bilnr)
+    mappe_plassering = os.path.abspath(output_path )+ "/Bilnr:_" +str(_bilnr)
     if os.path.exists(mappe_plassering):
         return  mappe_plassering
         print(f"Mappe '{mappe_plassering}' er valgt.")
@@ -77,38 +78,25 @@ def detect_and_save(image_path, output_path):
 
     # Gjennomfør prediksjon
     with torch.no_grad():
-        predictions = model(image_tensor)
+       predictions = model(image_tensor)
 
     # Filtrere ut bokser med høy sannsynlighet for å inneholde biler
-    threshold = 0.9  # Juster terskelen etter behov
+      # Juster terskelen etter behov
 
     #Lager bilde med bokser rundt bilene.
-    bboxes = predictions[0]['boxes'][predictions[0]['scores'] > threshold].tolist()
-    img_boks = lag_bilde_med_boks(image, bboxes)
+    bboxes = predictions[0]['boxes'][predictions[0]['scores'] > _threshold].tolist()
+    #img_boks = lag_bilde_med_boks(image, bboxes)
 
     # Lagre bilder med biler
     if len(bboxes) > 0:
         _tomm_ny_mappe = False
         os.makedirs(mappe_sti, exist_ok=True)
         output_file = os.path.join(mappe_sti, f"detected_{os.path.basename(image_path)}")
-        img_boks.save(output_file)
+        image.save(output_file)
         print(f"Biler ble funnet og lagret: {mappe_sti}")
     else:
         if not _tomm_ny_mappe:
             lag_ny_mappe(output_path)
             _tomm_ny_mappe = True
-        print("Ingen biler ble funnet på dette bildet.")
-
-# Kjør funksjonen for hvert bilde
-project_root = "Prosjekt"
-
-# Oppdater stiene ved å bruke os.path.join
-image_folder = os.path.join(project_root, "Resourses", "Input_sources")
-output_folder = os.path.join(project_root, "Resourses", "Output_sources")
-
-for image_file in os.listdir(image_folder):
-    if image_file.endswith(('.png', '.jpg', '.jpeg')):
-        image_path = os.path.join(image_folder, image_file)
-        detect_and_save("Prosjekt/Resourses/Input_sources/Car passing by in a Highway - Royalty Free Stock Video _ (Copyright Free) Download.mp4", output_folder)
-
-#"/Users/oyvstokke-ter/DropboxMac/DocumentsGitHub/Bilde_Kvalitets_Detektor-BKD-/Prosjekt/Source/Passering/Video_Slicer.py
+        
+            print("Ingen biler ble funnet på dette bildet.")

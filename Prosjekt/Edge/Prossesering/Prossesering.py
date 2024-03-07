@@ -2,19 +2,20 @@ import os
 import sys
 sys.path.append('Prosjekt/Edge')
 from Objekt import Bil
+from Lys import Lys_Detektor
+from Motion_Blur import Motion_Blur_Detektor
 import shutil
-
+import cv2
 #For Testing av bilder, midlertidig
 import pickle
 import matplotlib.pyplot as plt
 from PIL import Image
+from torchvision.transforms import functional as F
 
-project_root = "Prosjekt"
+_output_mappe_sti = os.path.join("Prosjekt", "Resourses", "Output_sources")
 
-# Oppdater stiene ved å bruke os.path.join
-_output_mappe_sti = os.path.join(project_root, "Resourses", "Output_sources")
-_Intern_database_sti = os.path.join(project_root, "Resourses", "Intern_database")
-
+# Her kan vi endre hvor "databasen" våres er lagret. # kanskje litt dumt å ha den som en del av pipeline?
+_Intern_database_sti = os.path.join("Prosjekt", "Resourses", "Intern_database")
 _antall_Biler = 0
 
 def lag_alle_bil_objekt():
@@ -24,13 +25,30 @@ def lag_alle_bil_objekt():
             _bilde_mappe_sti = os.path.join(_output_mappe_sti, element)
             bil_objekt = lag_bil_objekt("Temp_steds_navn",_bilde_mappe_sti)
             global _antall_Biler
+            sjekk_kvalitet(bil_objekt)
+            #bil_objekt.lav_belysning = Lys_Detektor.Lysnivå_for_lav(bil_objekt.hent_bilde_en())
+            #bil_objekt.motion_blur = Motion_Blur_Detektor.is_blur(bil_objekt.hent_bilde_en()) 
+            print("bil nummer :" + str(_antall_Biler +1)+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur) )
             _antall_Biler+=1
             bil_objekt.lagre_til_fil(ny_objekt_fil(_Intern_database_sti, _antall_Biler))
+
+
+def sjekk_kvalitet(bil):
+    if(not Lys_Detektor.Lysnivå_for_lav(bil.hent_bilde_en())):
+        #legg til sjekk for urent kamera her
+       if(Motion_Blur_Detektor.is_blur(bil.hent_bilde_en())):
+           bil.motion_blur = True
+           #kjør debluring
+           
+           #TEMP legger bare til ett bilde i listen.
+           bil.redigerte_bilder.append(bil.hent_bilde_en())
+    else :
+        bil.lav_belysning = True
 
 def lag_bil_objekt (sted, _mappe_sti):
     return Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
 
-
+#Kan ikke lagre selve bildene i lag med objektet. så lager en liste av stien til bildene i stede.
 def lag_bilde_sti_liste(mappe_sti):
     bildeliste = os.listdir(mappe_sti)
     bildeliste = [os.path.join(mappe_sti, fil) for fil in bildeliste if fil.lower().endswith(('.jpg', '.jpeg', '.png'))]
@@ -50,7 +68,12 @@ def slett_mappe(mappe_sti):
     else:
         print("Finner ikke mappe")
 
-
+# tar inn image_path og returnerer en tensor av bildet. 
+def finn_Bilde(image_path):
+    image = cv2.imread(image_path)
+    # Gjør bilde til en torch tensor
+    return F.to_tensor(image).unsqueeze(0)
+    
 
 
 #-------------------------------TEST-----------------------------
@@ -62,7 +85,8 @@ def slett_mappe(mappe_sti):
 
 #lag_alle_bil_objekt()
 lag_alle_bil_objekt()
-fil = "Prosjekt/Resourses/Intern_database/bild_id_2.pkl" # Endre etter behov. henter direkte objekt filen.
+fil = os.path.join("Prosjekt", "Resourses", "Intern_database","bild_id_2.pkl")
+
 def laste_fra_fil(filnavn):
         with open(filnavn, 'rb') as fil:
             return pickle.load(fil)     
@@ -70,9 +94,11 @@ def laste_fra_fil(filnavn):
 bil = laste_fra_fil(fil)
 print(bil.sted)
 print(bil.orginal_bilder[0])
+print(bil.lav_belysning)
 
 # Få absolutt filsti til bildet
-bildebane = (bil.orginal_bilder[0]) #viser første bilde i listen
+
+bildebane = (bil.redigerte_bilder[0]) #viser første bilde i listen
 print(bildebane)
 
 if os.path.exists(bildebane):

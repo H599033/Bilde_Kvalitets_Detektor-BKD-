@@ -6,14 +6,14 @@ import Passering_detektor
 project_root = "Prosjekt"
 
 # Oppdater stiene ved å bruke os.path.join
-video_path = os.path.join(project_root, "Resourses", "Input_sources", "Test_video.mp4")
+video_path = os.path.join(project_root, "Resourses", "Input_sources", "Test_Video_BKD_short.mp4")
 output_folder = os.path.join(project_root, "Resourses", "Output_sources")
 temp_images_folder = os.path.join(project_root, "Resourses", "Temp_sources")
 
 # Åpne videofilen
 cap = cv2.VideoCapture(video_path)
 
-skip_frames = 20
+skip_frames = 15
 bil_dict = {}  # Dictionary for å lagre informasjon om biler
 # Les hver femte ramme i videoen
 frame_count = 0
