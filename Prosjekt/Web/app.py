@@ -37,8 +37,8 @@ def display():
 @app.route('/image/<path:filename>')
 def serve_image(filename):
     base_dir = os.path.abspath(os.path.dirname(__file__))
-    base_dir = base_dir.replace('\\Prosjekt', '')  # remove '\Prosjekt' from the base_dir
-    base_dir = base_dir.replace('\\Web', '')  # remove '\\Web' from the base_dir
+    base_dir = base_dir.replace(os.path.join(os.sep, 'Prosjekt'), '')  # remove '\Prosjekt' or '/Prosjekt' from the base_dir
+    base_dir = base_dir.replace(os.path.join(os.sep, 'Web'), '')  # remove '\Web' or '/Web' from the base_dir
     image_path = os.path.join(base_dir, filename)
     return send_file(image_path, mimetype='image/png')
 

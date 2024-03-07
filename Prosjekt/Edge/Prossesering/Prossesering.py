@@ -1,3 +1,4 @@
+
 import os
 import sys
 sys.path.append('Prosjekt/Edge')
@@ -6,6 +7,7 @@ from Lys import Lys_Detektor
 from Motion_Blur import Motion_Blur_Detektor
 import shutil
 import cv2
+
 #For Testing av bilder, midlertidig
 import pickle
 import matplotlib.pyplot as plt
@@ -26,8 +28,7 @@ def lag_alle_bil_objekt():
             bil_objekt = lag_bil_objekt("Temp_steds_navn",_bilde_mappe_sti)
             global _antall_Biler
             sjekk_kvalitet(bil_objekt)
-            #bil_objekt.lav_belysning = Lys_Detektor.Lysnivå_for_lav(bil_objekt.hent_bilde_en())
-            #bil_objekt.motion_blur = Motion_Blur_Detektor.is_blur(bil_objekt.hent_bilde_en()) 
+            
             print("bil nummer :" + str(_antall_Biler +1)+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur) )
             _antall_Biler+=1
             bil_objekt.lagre_til_fil(ny_objekt_fil(_Intern_database_sti, _antall_Biler))
@@ -85,7 +86,7 @@ def finn_Bilde(image_path):
 
 #lag_alle_bil_objekt()
 lag_alle_bil_objekt()
-fil = os.path.join("Prosjekt", "Resourses", "Intern_database","bild_id_2.pkl")
+fil = os.path.join("Prosjekt", "Resourses", "Intern_database","bild_id_3.pkl")
 
 def laste_fra_fil(filnavn):
         with open(filnavn, 'rb') as fil:
@@ -98,7 +99,7 @@ print(bil.lav_belysning)
 
 # Få absolutt filsti til bildet
 
-bildebane = (bil.redigerte_bilder[0]) #viser første bilde i listen
+bildebane = (bil.orginal_bilder[0]) #viser første bilde i listen
 print(bildebane)
 
 if os.path.exists(bildebane):
