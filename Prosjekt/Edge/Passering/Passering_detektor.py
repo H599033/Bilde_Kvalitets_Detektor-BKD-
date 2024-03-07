@@ -20,10 +20,10 @@ _threshold = 0.9
 def lag_ny_mappe (output_path):
     global _bilnr
     _bilnr += 1
-    ny_mappe_navn = "Bilnr:_" +str(_bilnr)
+    ny_mappe_navn = "Bilnr_" +str(_bilnr)
     plassering_path = output_path
     ny_mappe_sti = os.path.join(plassering_path, ny_mappe_navn)
-
+    print (ny_mappe_sti)
     if not os.path.exists(ny_mappe_sti):
         # Opprett mappen hvis den ikke eksisterer
         os.makedirs(ny_mappe_sti)
@@ -33,7 +33,7 @@ def lag_ny_mappe (output_path):
     return ny_mappe_sti
 
 def velg_mappe(output_path):
-    mappe_plassering = os.path.abspath(output_path )+ "/Bilnr:_" +str(_bilnr)
+    mappe_plassering = os.path.abspath(output_path )+ "/Bilnr_" +str(_bilnr)
     if os.path.exists(mappe_plassering):
         return  mappe_plassering
         print(f"Mappe '{mappe_plassering}' er valgt.")

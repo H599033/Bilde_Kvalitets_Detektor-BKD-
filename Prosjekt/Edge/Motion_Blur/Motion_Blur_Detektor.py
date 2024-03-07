@@ -26,7 +26,7 @@ def is_blur(image_path):
 
 #------------------------------------------TEST--------------------------------------------------------
 #lag historgram#
-print(is_blur("Prosjekt/Resourses/Output_sources/Bilnr:_3/_MG_6175.JPG"))
+print(is_blur("Prosjekt/Resourses/Output_sources/Bilnr_3/_MG_6175.JPG"))
 # Load and process the image using OpenCV
 """
 

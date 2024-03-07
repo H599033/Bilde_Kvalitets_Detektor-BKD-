@@ -45,7 +45,7 @@ def Lysnivå_for_lav(image_path):
 
 #------------TEST----------------------
 
-print(sjekk_lys_Hele_Bildet("Prosjekt/Resourses/Output_sources/Bilnr:_2/detected_temp_frame_3.png"))
+#print(sjekk_lys_Hele_Bildet("Prosjekt/Resourses/Output_sources/Bilnr_2/detected_temp_frame_3.png"))
 
     # referansene til bilder under kan endre seg.
     # disse resultatene er basert på en standar treshold. ikke definert i denne klassen. 
