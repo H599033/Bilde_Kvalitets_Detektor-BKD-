@@ -9,26 +9,26 @@
 
 <body style="background-color: rgb(40, 39, 39);">
     <header style="text-align: left;">
-        <img src="/logo/logo2.png" alt="Logo">
-        <button id="arrowButton">➤</button>
+        <img type=button id="logo" src="/logo/logo2.png" alt="Logo">
+        <button id="arrowButton">Søk ⏷</button>
         <div id="searchBar" style="display: none;">
             <form id="sortForm">
-                <input type="checkbox" id="id" name="id"><label for="id">ID</label><br>
-                <input type="checkbox" id="place" name="place"><label for="place">Place</label><br>
-                <input type="checkbox" id="time" name="time"><label for="time">Time</label><br>
-                <input type="checkbox" id="date" name="date"><label for="date">Date</label><br>
+                <label for="id">ID</label><input type="checkbox" id="id" name="id"><br>
+                <label for="place">Sted</label><input type="checkbox" id="place" name="place"><br>
+                <label for="time">Tid</label><input type="checkbox" id="time" name="time"><br>
+                <label for="startDate">Startdato</label><input type="date" id="startDate" name="startDate">
+                <label for="endDate">Sluttdato</label><input type="date" id="endDate" name="endDate"><br>
+                <label for="kvalitet">Kvalitet</label>
                 <select id="kvalitet" name="kvalitet">
                     <option value="motion_blur">Motion Blur</option>
                     <option value="lav_belysning">Lav Belysning</option>
                     <option value="urent_kamera">Urent Kamera</option>
-                </select>
-                <label for="kvalitet">Kvalitet</label><br>
-                <input type="submit" value="Sort">
+                </select><br>
+                <button type="button" id="resetButton">Reset</button>
             </form>
         </div>
     </header>
     <div id="content" style="background-color: LightGray;">
     </div>
 </body>
-
 </html>

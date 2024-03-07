@@ -30,3 +30,7 @@ img {
   width: 300px;
   height: auto;
 }
+
+#searchBar {
+  color: white;
+}

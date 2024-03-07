@@ -1,13 +1,26 @@
 $(document).ready(function () {
-        $('#arrowButton').on('click', function () {
-            $('#searchBar').toggle();
-        });
-        $('#sortForm').on('submit', function (event) {
-            event.preventDefault();
-            popup.close();
-        });
-    $('#filterDropdown').on('change', function () {
-        var value = $(this).val().toLowerCase();
+    $('#arrowButton').on('click', function () {
+        $('#searchBar').toggle();
+    });
+    $('#sortForm').on('submit', function (event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+        $('#kvalitet').trigger('change');
+        $('#startDate').trigger('change');
+        $('#endDate').trigger('change');
+        $('#resetButton').trigger('change');
+    });
+
+    $('#kvalitet').on('change', filterTable);
+    $('#startDate').on('change', filterTable);
+    $('#endDate').on('change', filterTable);
+    $('#resetButton').on('click', resetTable);
+    $('#logo').on('click', resetTable);
+
+    function filterTable() {
+        var kvalitetValue = $('#kvalitet').val().toLowerCase();
+        var startDateValue = new Date($('#startDate').val());
+        var endDateValue = new Date($('#endDate').val());
+
         $("table tr").each(function (index) {
             if (index !== 0) {
                 $row = $(this);
@@ -15,19 +28,23 @@ $(document).ready(function () {
                 var motionBlur = $row.find("td:eq(4)").text().indexOf("Motion blur: ✖") > -1;
                 var lavBelysning = $row.find("td:eq(4)").text().indexOf("Lav belysning: ✖") > -1;
                 var urentKamera = $row.find("td:eq(4)").text().indexOf("Skittent kamera: ✖") > -1;
+                var rowDate = new Date($row.find("td:eq(3)").text()); // Assuming the date is in the fourth column
 
-                if (value === "home") {
-                    $row.show();
-                } else if ((value === "motion_blur" && motionBlur) ||
-                    (value === "lav_belysning" && lavBelysning) ||
-                    (value === "urent_kamera" && urentKamera)) {
+                if ((kvalitetValue === "home" || (kvalitetValue === "motion_blur" && motionBlur) ||
+                    (kvalitetValue === "lav_belysning" && lavBelysning) ||
+                    (kvalitetValue === "urent_kamera" && urentKamera)) && 
+                    (!startDateValue || !endDateValue || (rowDate >= startDateValue && rowDate <= endDateValue))) {
                     $row.show();
                 } else {
                     $row.hide();
                 }
             }
         });
-    });
+    }
+
+    function resetTable() {
+        $("table tr").show(); 
+    }
     $.getJSON("/display", function (data) {
         var table = $("<table></table>");
         var headerRow = $("<tr></tr>");
