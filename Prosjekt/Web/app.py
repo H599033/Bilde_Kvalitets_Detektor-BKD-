@@ -25,6 +25,9 @@ def display():
             'tid': bil.tid,
             'dato': bil.dato,
             'sted': bil.sted,
+            'motion_blur': bil.motion_blur,
+            'lav_belysning' : bil.lav_belysning,
+            'urent_kamera' : bil.urent_kamera,
             'orginal_bilder': ['/image/' + img for img in bil.orginal_bilder],
             'redigerte_bilder': ['/image/' + img for img in bil.redigerte_bilder]
         })
@@ -42,6 +45,10 @@ def serve_image(filename):
 @app.route('/css/<path:filename>')
 def serve_css(filename):
     return send_file(os.path.join('templates', filename), mimetype='text/css')
+
+@app.route('/js/<path:filename>')
+def serve_js(filename):
+    return send_file(os.path.join('templates', filename), mimetype='application/javascript')
 
 @app.route('/logo/<path:filename>')
 def serve_logo(filename):
