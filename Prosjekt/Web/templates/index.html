@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('serve_css', filename='index.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{{ url_for('serve_js', filename='index.js') }}"></script>
+</head>
+
+<body style="background-color: rgb(40, 39, 39);">
+    <header style="text-align: left;">
+        <img src="/logo/logo2.png" alt="Logo">
+        <button id="arrowButton">➤</button>
+        <div id="searchBar" style="display: none;">
+            <form id="sortForm">
+                <input type="checkbox" id="id" name="id"><label for="id">ID</label><br>
+                <input type="checkbox" id="place" name="place"><label for="place">Place</label><br>
+                <input type="checkbox" id="time" name="time"><label for="time">Time</label><br>
+                <input type="checkbox" id="date" name="date"><label for="date">Date</label><br>
+                <select id="kvalitet" name="kvalitet">
+                    <option value="motion_blur">Motion Blur</option>
+                    <option value="lav_belysning">Lav Belysning</option>
+                    <option value="urent_kamera">Urent Kamera</option>
+                </select>
+                <label for="kvalitet">Kvalitet</label><br>
+                <input type="submit" value="Sort">
+            </form>
+        </div>
+    </header>
+    <div id="content" style="background-color: LightGray;">
+    </div>
+</body>
+
+</html>
