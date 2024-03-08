@@ -7,6 +7,8 @@ from Lys import Lys_Detektor
 from Motion_Blur import Motion_Blur_Detektor
 import shutil
 import cv2
+from datetime import datetime
+from Passering import Video_Slicer , Passering_detektor
 
 #For Testing av bilder, midlertidig
 import pickle
@@ -22,18 +24,24 @@ _antall_Biler = 0
 
 def lag_alle_bil_objekt():
     innhold = os.listdir(_output_mappe_sti)
+    global _antall_Biler
     for element in innhold:
         if element != ".DS_Store": #Dette er en usynelig mappe som vi ikke ønsker å ha en del av listen
+            _antall_Biler+=1 
             _bilde_mappe_sti = os.path.join(_output_mappe_sti, element)
-            bil_objekt = lag_bil_objekt("Temp_steds_navn",_bilde_mappe_sti)
-            global _antall_Biler
-            sjekk_kvalitet(bil_objekt)
+            bil_objekt = lag_bil_objekt("Bergen",_bilde_mappe_sti)
             
-            print("bil nummer :" + str(_antall_Biler +1)+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur) )
-            _antall_Biler+=1
+            dato_Og_tid(bil_objekt)
+            sjekk_kvalitet(bil_objekt)            
+                      
+            print("bil nummer :" + str(_antall_Biler )+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur) )            
             bil_objekt.lagre_til_fil(ny_objekt_fil(_Intern_database_sti, _antall_Biler))
 
-
+def dato_Og_tid(bil):
+    nå = datetime.now()
+    bil.dato = nå.strftime("%Y-%m-%d")
+    bil.tid = nå.strftime("%H:%M:%S")
+    
 def sjekk_kvalitet(bil):
     if(not Lys_Detektor.Lysnivå_for_lav(bil.hent_bilde_en())):
         #legg til sjekk for urent kamera her
@@ -47,7 +55,9 @@ def sjekk_kvalitet(bil):
         bil.lav_belysning = True
 
 def lag_bil_objekt (sted, _mappe_sti):
-    return Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
+    bil = Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
+    bil.ID = _antall_Biler
+    return bil
 
 #Kan ikke lagre selve bildene i lag med objektet. så lager en liste av stien til bildene i stede.
 def lag_bilde_sti_liste(mappe_sti):
@@ -78,6 +88,7 @@ def finn_Bilde(image_path):
 
 
 #-------------------------------TEST-----------------------------
+
 # Før testing av denne koden. kjør Video_slicer.py først. 
 # Kjør den til du har minst ett bilde i "Resourses.Output_source". Helst til du har flere mapper i "Output_source"
 # avbry kjøring med (control c) i terminalen
@@ -85,8 +96,12 @@ def finn_Bilde(image_path):
 # burde nå inne holde like mange filer som det er mapper inne i "Output_source"
 
 #lag_alle_bil_objekt()
-lag_alle_bil_objekt()
-fil = os.path.join("Prosjekt", "Resourses", "Intern_database","bild_id_3.pkl")
+
+#Video_Slicer.start()
+
+#lag_alle_bil_objekt()
+
+fil = os.path.join("Prosjekt", "Resourses", "Intern_database","bild_id_2.pkl")
 
 def laste_fra_fil(filnavn):
         with open(filnavn, 'rb') as fil:
@@ -94,6 +109,8 @@ def laste_fra_fil(filnavn):
 
 bil = laste_fra_fil(fil)
 print(bil.sted)
+print(bil.dato)
+print(bil.tid)
 print(bil.orginal_bilder[0])
 print(bil.lav_belysning)
 
@@ -101,10 +118,3 @@ print(bil.lav_belysning)
 
 bildebane = (bil.orginal_bilder[0]) #viser første bilde i listen
 print(bildebane)
-
-if os.path.exists(bildebane):
-    bilde = Image.open(bildebane)
-    plt.imshow(bilde)
-    plt.show()
-else:
-    print(f"Filen {bildebane} eksisterer ikke.")
