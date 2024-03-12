@@ -11,10 +11,12 @@ header {
   background-color: LightGray;
 }
 
+
 table {
   width: 100%;
   border-collapse: collapse;
 }
+
 
 table, th, td {
   border: 1px solid black;
@@ -32,5 +34,30 @@ img {
 }
 
 #searchBar {
-  color: white;
+  color: black;
 }
+
+#sortForm .form-group {
+  display: flex;
+  justify-content: space-between;
+  width: 15%;
+  border: 1px solid black;
+  background-color: LightGray;
+  padding: 10px; 
+
+#sortForm .label-container, #sortForm .input-container {
+  width: 45%; 
+  padding: 5px;
+  border: 1px solid black;
+}
+
+#sortForm label {
+  text-align: left;
+  display: block;
+}
+
+#sortForm input, #sortForm select {
+  text-align: right;
+  width: 40%; 
+}
+

@@ -2,24 +2,26 @@ $(document).ready(function () {
     $('#arrowButton').on('click', function () {
         $('#searchBar').toggle();
     });
-    $('#sortForm').on('submit', function (event) {
-        event.preventDefault(); // Prevent the form from submitting normally
-        $('#kvalitet').trigger('change');
-        $('#startDate').trigger('change');
-        $('#endDate').trigger('change');
-        $('#resetButton').trigger('change');
-    });
 
+    $('#resetButton').on('click', resetTable);
+    $('#logo').on('click', resetTable);
     $('#kvalitet').on('change', filterTable);
     $('#startDate').on('change', filterTable);
     $('#endDate').on('change', filterTable);
-    $('#resetButton').on('click', resetTable);
-    $('#logo').on('click', resetTable);
+    $('#startTime').on('change', filterTable);
+    $('#endTime').on('change', filterTable);
+    $('#id').on('change', filterTable);
+    $('#place').on('change', filterTable);
+
 
     function filterTable() {
         var kvalitetValue = $('#kvalitet').val().toLowerCase();
-        var startDateValue = new Date($('#startDate').val());
-        var endDateValue = new Date($('#endDate').val());
+        var startDateValue = $('#startDate').val() ? new Date($('#startDate').val()) : null;
+        var endDateValue = $('#endDate').val() ? new Date($('#endDate').val()) : null;
+        var startTimeValue = $('#startTime').val() ? $('#startTime').val() : null;
+        var endTimeValue = $('#endTime').val() ? $('#endTime').val() : null;
+        var idValue = $('#id').val() ? $('#id').val().toLowerCase() : null;
+        var placeValue = $('#place').val().toLowerCase();
 
         $("table tr").each(function (index) {
             if (index !== 0) {
@@ -28,22 +30,37 @@ $(document).ready(function () {
                 var motionBlur = $row.find("td:eq(4)").text().indexOf("Motion blur: ✖") > -1;
                 var lavBelysning = $row.find("td:eq(4)").text().indexOf("Lav belysning: ✖") > -1;
                 var urentKamera = $row.find("td:eq(4)").text().indexOf("Skittent kamera: ✖") > -1;
-                var rowDate = new Date($row.find("td:eq(3)").text()); // Assuming the date is in the fourth column
+                var rowDate = new Date($row.find("td:eq(3)").text());
+                var rowTime = $row.find("td:eq(2)").text();
+                var rowId = $row.find("td:eq(0)").text().toLowerCase();
+                var rowPlace = $row.find("td:eq(1)").text().indexOf("Bergen") > -1;
 
-                if ((kvalitetValue === "home" || (kvalitetValue === "motion_blur" && motionBlur) ||
+                var kvalitetMatch =     
+                    (kvalitetValue === "select..." || 
+                    (kvalitetValue === "motion_blur" && motionBlur) ||
                     (kvalitetValue === "lav_belysning" && lavBelysning) ||
-                    (kvalitetValue === "urent_kamera" && urentKamera)) && 
-                    (!startDateValue || !endDateValue || (rowDate >= startDateValue && rowDate <= endDateValue))) {
+                    (kvalitetValue === "urent_kamera" && urentKamera));
+
+                var dateMatch = (!startDateValue || rowDate >= startDateValue) && (!endDateValue || rowDate <= endDateValue);
+                var timeMatch = (!startTimeValue || rowTime >= startTimeValue) && (!endTimeValue || rowTime <= endTimeValue);
+                var idMatch = (!idValue || rowId.includes(idValue));
+                var placeMatch = (placeValue === "select..." || (!placeValue || (placeValue === "bergen" && rowPlace)));
+                
+                if (kvalitetMatch && dateMatch && timeMatch && idMatch && placeMatch) {
                     $row.show();
                 } else {
                     $row.hide();
                 }
+          
             }
         });
     }
 
+    // This will reset all the input fields in the form to their default values
     function resetTable() {
-        $("table tr").show(); 
+        $("table tr").show();
+        $('#sortForm').find('input[type=search], input[type=time], input[type=date], input[type=text]').val('');
+        $('#sortForm').find('select').prop('selectedIndex', 0);
     }
     $.getJSON("/display", function (data) {
         var table = $("<table></table>");
@@ -64,35 +81,40 @@ $(document).ready(function () {
             row.append("<td><p>" + value.dato + "</p></td>");
             var qualityIndicator = "";
             if (Boolean(value.motion_blur) == true) {
-                qualityIndicator += "Motion blur: " + "<p style='color:red;'>✖</p>";
+                qualityIndicator += "Motion blur: " + "<span style='color:red;'>✖</span>";
             }
             if (Boolean(value.lav_belysning) == true) {
-                qualityIndicator += "Lav belysning: " + "<p style='color:red;'>✖</p>";
+                qualityIndicator += "Lav belysning: " + "<span style='color:red;'>✖</span>";
             }
             if (Boolean(value.urent_kamera) == true) {
-                qualityIndicator += "Skittent kamera: " + "<p style='color:red;'>✖</p>";
+                qualityIndicator += "Skittent kamera: " + "<span style='color:red;'>✖</span>";
             }
             if (qualityIndicator === "") {
-                qualityIndicator = "Kvalitet: " + "<p style='color:green;'>✔</p>";
+                qualityIndicator = "Kvalitet: " + "<span style='color:green;'>✔</span>";
             }
             row.append("<td>" + qualityIndicator + "</td>");
 
 
             var imgCell = $("<td></td>");
-            var select = $("<select class='image-selector'></select>");
+            var select = $("<select class='image-selector' style='position: absolute; top: 0; right: 0;'></select>");
             $.each(value.orginal_bilder, function (i, img) {
                 select.append("<option value='" + img + "'>Image " + (i + 1) + "</option>");
             });
-            imgCell.append(select);
-            imgCell.append("<img class='selected-image' src='" + value.orginal_bilder[0] + "' alt='Orginal Bilder'>");
+            var imgDiv = $("<div style='position: relative;'></div>");
+            imgDiv.append("<img class='selected-image' src='" + value.orginal_bilder[0] + "' alt='Orginal Bilder'>");
+            imgDiv.append(select);
+            imgCell.append(imgDiv);
             row.append(imgCell);
+
             var redImgCell = $("<td></td>");
-            var redSelect = $("<select class='image-selector'></select>");
+            var redSelect = $("<select class='image-selector' style='position: absolute; top: 0; right: 0;'></select>");
             $.each(value.redigerte_bilder, function (i, img) {
                 redSelect.append("<option value='" + img + "'>Image " + (i + 1) + "</option>");
             });
-            redImgCell.append(redSelect);
-            redImgCell.append("<img class='selected-image' src='" + value.redigerte_bilder[0] + "' alt='Ok'>");
+            var redImgDiv = $("<div style='position: relative;'></div>");
+            redImgDiv.append("<img class='selected-image' src='" + value.redigerte_bilder[0] + "' alt='Ok'>");
+            redImgDiv.append(redSelect);
+            redImgCell.append(redImgDiv);
             row.append(redImgCell);
             table.append(row);
         });

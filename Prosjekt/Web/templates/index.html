@@ -13,17 +13,42 @@
         <button id="arrowButton">Søk ⏷</button>
         <div id="searchBar" style="display: none;">
             <form id="sortForm">
-                <label for="id">ID</label><input type="checkbox" id="id" name="id"><br>
-                <label for="place">Sted</label><input type="checkbox" id="place" name="place"><br>
-                <label for="time">Tid</label><input type="checkbox" id="time" name="time"><br>
-                <label for="startDate">Startdato</label><input type="date" id="startDate" name="startDate">
-                <label for="endDate">Sluttdato</label><input type="date" id="endDate" name="endDate"><br>
-                <label for="kvalitet">Kvalitet</label>
-                <select id="kvalitet" name="kvalitet">
-                    <option value="motion_blur">Motion Blur</option>
-                    <option value="lav_belysning">Lav Belysning</option>
-                    <option value="urent_kamera">Urent Kamera</option>
-                </select><br>
+                <div class="form-group">
+                    <label for="id">ID</label>
+                    <input type="text" id="id" name="id">
+                </div>
+                <div class="form-group">
+                    <label for="place">Sted</label>
+                    <select id="place" name="place"> 
+                        <option>Select...</option>
+                        <option value="bergen">Bergen</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="startTime">Start tidspunkt</label>
+                    <input type="time" id="startTime" name="startTime">
+                </div>
+                <div class="form-group">
+                    <label for="endTime">Slutt tidspunkt</label>
+                    <input type="time" id="endTime" name="endTime">
+                </div>
+                <div class="form-group">
+                    <label for="startDate">Start dato</label>
+                    <input type="date" id="startDate" name="startDate">
+                </div>
+                <div class="form-group">
+                    <label for="endDate">Slutt dato</label>
+                    <input type="date" id="endDate" name="endDate">
+                </div>
+                <div class="form-group">
+                    <label for="kvalitet">Kvalitet</label>
+                    <select id="kvalitet" name="kvalitet">
+                        <option>Select...</option>
+                        <option value="motion_blur">Motion Blur</option>
+                        <option value="lav_belysning">Lav Belysning</option>
+                        <option value="urent_kamera">Urent Kamera</option>
+                    </select>
+                </div>
                 <button type="button" id="resetButton">Reset</button>
             </form>
         </div>
