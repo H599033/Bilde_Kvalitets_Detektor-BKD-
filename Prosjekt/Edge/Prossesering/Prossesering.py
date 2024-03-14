@@ -100,7 +100,7 @@ def finn_Bilde(image_path):
 #Video_Slicer.start()
 
 #lag_alle_bil_objekt()
-
+"""
 fil = os.path.join("Prosjekt", "Resourses", "Intern_database","bild_id_2.pkl")
 
 def laste_fra_fil(filnavn):
@@ -118,3 +118,4 @@ print(bil.lav_belysning)
 
 bildebane = (bil.orginal_bilder[0]) #viser første bilde i listen
 print(bildebane)
+"""
