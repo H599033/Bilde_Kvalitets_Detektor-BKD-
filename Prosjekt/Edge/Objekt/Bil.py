@@ -26,4 +26,7 @@ class Bil:
             return pickle.load(fil)
 
     def hent_bilde_en(self):
-        return self.orginal_bilder[0]
+        if self.orginal_bilder:
+            return self.orginal_bilder[0]
+        else:
+            return None

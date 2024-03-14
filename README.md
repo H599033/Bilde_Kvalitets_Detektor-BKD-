@@ -25,7 +25,7 @@ Innhold i denne filen
         5. "pip install torchvision"
         6. "pip install flask" for flask Rammeverk for web.
         7. "pip install matplotlib" 
-        8. "pip install tensorflow" 
+        
     
     2. -------------------------------TEST-------------------------------
         1. 

@@ -6,7 +6,7 @@ import random
 import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
-
+import math
 
 class CH_Bilder_Manipulator:
     
@@ -39,8 +39,12 @@ class CH_Bilder_Manipulator:
         
         bilde = cv2.imread(bilde)
         # Definer en motion blur-kjerne
-        kernel_size = 2
+        kernel_size = 21
         kernel = np.ones((kernel_size, kernel_size), np.float32) / kernel_size**2
+   #     cv2.imshow('1', bilde)
+  #      cv2.imshow('2', cv2.filter2D(bilde, -1, kernel))
+ #       cv2.waitKey(0)
+#        cv2.destroyAllWindows()
 
         # Utfør en 2D konvolusjon med bildet og motion blur-kjernen
         return cv2.filter2D(bilde, -1, kernel)
@@ -79,8 +83,7 @@ class CH_Bilder_Manipulator:
         # Konverter tensor tilbake til Numpy-array.
         blurred_image = blurred_image.squeeze().numpy()
 
-        return blurred_image
-    
+        return blurred_image   
     
     def lag_Bilde_Mb (self,bilde_kilde,bilde_mål):
         MB_faktor = round(random.uniform(10, 18)) / 10.0
@@ -105,7 +108,7 @@ class CH_Bilder_Manipulator:
 
             # Sørger for at bare bilder blir behandlet
             if fil_navn.lower().endswith(('.jpg', '.jpeg', '.png')):
-             self.lag_Bilde_Mb(fil_sti, bilde_mål)
+             self.legg_til_motion_blur(fil_sti, 1)
              
     # Denne funksjunen utregner variansen til bilde. 
     # Brukes for å utregne hvilken treshold som skal brukes for Mb detektoren
@@ -118,6 +121,9 @@ class CH_Bilder_Manipulator:
         laplacian_kernel = torch.Tensor([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
         # Convolving image with Laplacian kernel
         new_img = F.conv2d(image, laplacian_kernel.unsqueeze(0).unsqueeze(0), padding=1)
+        cv2.imshow('2', new_img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
         # Calculating variance
         img_var = torch.var(new_img)
         print(img_var)
@@ -182,14 +188,15 @@ CH_MB_Bilder_path = os.path.join(project_root, "Resourses", "CH_bilder", "Lagt_t
 
    # Opprett en instans av CH_Bilder_Manipulator
 bilder_manipulator = CH_Bilder_Manipulator()
-test= "Prosjekt/Resourses/CH_bilder/Lagt_til_Motion_blur/D20230926_T153216_0.png_MB_nivå_1.4.png"
+test= "Prosjekt/Resourses/CH_bilder/Orginal_Bilder/D20230324_T134042_0.png"
 
 # Kall lag_Bilde_Mb ved å bruke instansen (self)
-bilder_manipulator.lag_alle_Mb_bilder(CH_orginal_Bilder_path,CH_MB_Bilder_path)
+#bilder_manipulator.lag_alle_Mb_bilder(CH_orginal_Bilder_path,CH_MB_Bilder_path)
 #bilder_manipulator.lag_alle_Mb_bilder(test,CH_MB_Bilder_path)
 
-
+#bilder_manipulator.legg_til_motion_blur(test,1)
 #bilder_manipulator.bilde_variance(bilder_manipulator.finn_bilde(test))
+bilder_manipulator.calculate_variance_histogram_folder("Prosjekt/Resourses/CH_bilder/Orginal_Bilder")
 #----------------------Test og resultater -------------------------#
 
 """
