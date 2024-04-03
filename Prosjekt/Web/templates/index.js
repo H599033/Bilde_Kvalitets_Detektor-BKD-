@@ -72,7 +72,7 @@ $(document).ready(function () {
         headerRow.append("<th>Tid</th>");
         headerRow.append("<th>Dato</th>");
         headerRow.append("<th>Kvalitet</th>");
-        headerRow.append("<th>Orginal Bilder</th>");
+        headerRow.append("<th>Original Bilder</th>");
         headerRow.append("<th>Korrigerte Bilder</th>");
         table.append(headerRow);
         $.each(data, function (key, value) {
