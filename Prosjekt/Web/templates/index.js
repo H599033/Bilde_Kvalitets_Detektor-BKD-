@@ -30,13 +30,15 @@ $(document).ready(function () {
                 var motionBlur = $row.find("td:eq(4)").text().indexOf("Motion blur: ✖") > -1;
                 var lavBelysning = $row.find("td:eq(4)").text().indexOf("Lav belysning: ✖") > -1;
                 var urentKamera = $row.find("td:eq(4)").text().indexOf("Skittent kamera: ✖") > -1;
+                var godkjent = $row.find("td:eq(4)").text().indexOf("Kvalitet: ✔") > -1;
                 var rowDate = new Date($row.find("td:eq(3)").text());
                 var rowTime = $row.find("td:eq(2)").text();
                 var rowId = $row.find("td:eq(0)").text().toLowerCase();
                 var rowPlace = $row.find("td:eq(1)").text().indexOf("Bergen") > -1;
 
                 var kvalitetMatch =     
-                    (kvalitetValue === "select..." || 
+                    (kvalitetValue === "select..." ||
+                    (kvalitetValue === "godkjent" && godkjent)||  
                     (kvalitetValue === "motion_blur" && motionBlur) ||
                     (kvalitetValue === "lav_belysning" && lavBelysning) ||
                     (kvalitetValue === "urent_kamera" && urentKamera));
