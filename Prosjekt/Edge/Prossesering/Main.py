@@ -4,5 +4,5 @@ import Prossesering
 from Edge.Passering import Video_Slicer
 
 
-Video_Slicer.start()
+#Video_Slicer.start()
 Prossesering.lag_alle_bil_objekt()

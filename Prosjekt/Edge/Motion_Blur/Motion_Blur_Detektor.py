@@ -11,7 +11,7 @@ def is_blur(image_path):
     tensor = torch.tensor(image_gray, dtype=torch.float32) / 255.0
     image = tensor.unsqueeze(0).unsqueeze(0) 
     
-    threshold = 0.006
+    threshold = 0.05
 
     # Laplacian kernel
     tesnsor = torch.Tensor([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
@@ -21,6 +21,7 @@ def is_blur(image_path):
 
     # Calculating variance
     img_var = torch.var(new_img)
+    print (f"Variance: {img_var}")
 
     return img_var.item()<threshold
 

@@ -17,18 +17,19 @@ from PIL import Image
 from torchvision.transforms import functional as F
 
 _output_mappe_sti = os.path.join("Prosjekt", "Resourses", "Output_sources")
-
+_CH_bilder_mappe_cropped = os.path.join("Prosjekt", "Resourses", "CH_bilder","CH_mappe_cropped")
 # Her kan vi endre hvor "databasen" våres er lagret. # kanskje litt dumt å ha den som en del av pipeline?
 _Intern_database_sti = os.path.join("Prosjekt", "Resourses", "Intern_database")
 _antall_Biler = 0
 
 def lag_alle_bil_objekt():
-    innhold = os.listdir(_output_mappe_sti)
+    #Her velges hvilken mappe objektene skal lages av.
+    innhold = os.listdir(_CH_bilder_mappe_cropped)
     global _antall_Biler
     for element in innhold:
         if element != ".DS_Store": #Dette er en usynelig mappe som vi ikke ønsker å ha en del av listen
             _antall_Biler+=1 
-            _bilde_mappe_sti = os.path.join(_output_mappe_sti, element)
+            _bilde_mappe_sti = os.path.join(_CH_bilder_mappe_cropped, element)
             bil_objekt = lag_bil_objekt("Bergen",_bilde_mappe_sti)
             
             dato_Og_tid(bil_objekt)

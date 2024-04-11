@@ -13,6 +13,7 @@ Innhold i denne filen
 
 
 
+
 2. ---------oppsett for kjøring av koden. --------------------------------------
 
    1. ----------------------------Nødvendige innstalasjoner--------------
@@ -24,7 +25,8 @@ Innhold i denne filen
         4. "pip install torch" for pytorch
         5. "pip install torchvision"
         6. "pip install flask" for flask Rammeverk for web.
-        7. "pip install matplotlib" 
+        7. "pip install matplotlib"
+        8. "pip install pytest"  For tester.
         
     
     2. -------------------------------TEST-------------------------------

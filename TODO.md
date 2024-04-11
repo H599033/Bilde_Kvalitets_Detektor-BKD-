@@ -9,6 +9,7 @@
     ALLT
     - All kode inn i classer
     - Unit tester
+  
     EDGE
     - Fikse at Bil lager ny id, dato, tid, og sted. Tilpass etter navn på CH-bilder  
     Må tilpasses etter hvordan vi får bildene. 
