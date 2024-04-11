@@ -95,19 +95,22 @@ $(document).ready(function () {
                 qualityIndicator = "Kvalitet: " + "<span style='color:green;'>✔</span>";
             }
             row.append("<td>" + qualityIndicator + "</td>");
-
-
+    
+    
             var imgCell = $("<td></td>");
             var select = $("<select class='image-selector' style='position: absolute; top: 0; right: 0;'></select>");
             $.each(value.orginal_bilder, function (i, img) {
                 select.append("<option value='" + img + "'>Image " + (i + 1) + "</option>");
             });
             var imgDiv = $("<div style='position: relative;'></div>");
-            imgDiv.append("<img class='selected-image' src='" + value.orginal_bilder[0] + "' alt='Orginal Bilder'>");
+            var image = $("<img class='selected-image' src='" + value.orginal_bilder[0] + "' alt='Original Bilder'>");
+            var downloadLink = $("<a class='download-link' style='position: absolute; bottom: 0; right: 0;' href='" + value.orginal_bilder[0] + "' download>Download</a>");
+            imgDiv.append(image);
             imgDiv.append(select);
+            imgDiv.append(downloadLink);
             imgCell.append(imgDiv);
             row.append(imgCell);
-
+    
             var redImgCell = $("<td></td>");
             var redSelect = $("<select class='image-selector' style='position: absolute; top: 0; right: 0;'></select>");
             $.each(value.redigerte_bilder, function (i, img) {
@@ -122,6 +125,7 @@ $(document).ready(function () {
         });
         $("#content").append(table);
     });
+
 });
 $(document).on('change', '.image-selector', function () {
     var selectedImage = $(this).val();
