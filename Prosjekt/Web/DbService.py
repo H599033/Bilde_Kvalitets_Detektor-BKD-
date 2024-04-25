@@ -26,8 +26,9 @@ def laste_fra_fil2(filnavn):
         print(f"Filen '{filnavn}' eksisterer ikke.")
         return None  # Eller en annen håndtering av feilen
 
-print("hei")
+"""
 for element in hent_alle_biler():
     if element:
         print(element.ID)
+"""
 

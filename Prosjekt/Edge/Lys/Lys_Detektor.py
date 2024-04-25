@@ -3,95 +3,80 @@ import torch
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from torchvision.transforms import functional as F
 
-_LysNivå_Grense_Fult_bilde = 30
-# Last modellen
-model = fasterrcnn_resnet50_fpn(weights='COCO_V1')
-model.eval()
+class Lys_Detektor():
 
-def sjekk_lys_Detektet_område(image):
-    # Last inn bildet
+    _LysNivå_Grense_Fult_bilde = 45
+    # Last modellen
+    model = fasterrcnn_resnet50_fpn(weights='COCO_V1')
+    model.eval()
 
-    # Få utput fra modellen
-    with torch.no_grad():
-        prediction = model(image)
 
-    # Få boksene fra prediksjonen
-    boxes = prediction[0]['boxes']
+    def sjekk_lys_Hele_Bildet(image_path):
+        # Last inn bildet
+        image = cv2.imread(image_path)
 
-    # Hent lysverdien fra et punkt (for eksempel midtpunktet av den første boksen)
-    box = boxes[0]
-    x_min, y_min, x_max, y_max = map(int, box)
+        # Hent lysverdien fra hele bildet
+        brightness_values = image
+
+        # Beregn gjennomsnittet av lysverdiene
+        brightness = brightness_values.mean()
+        return brightness
+
+    def Lavt_Lysnivå_allesider_dekk(self,image_path):
+        """
+        This function convolves a grayscale image with
+        a Laplacian kernel and calculates its variance.
+        """
+        bgr_image = cv2.imread(image_path)
+        
+        image_height, image_width = bgr_image.shape[:2]
+        
+        imgae_size = image_height*image_width
+
+        # Klipp bildet fra sentrum av x-aksen
+        overst = self.crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.070), -int(image_width * 0.20), -int(image_height*0.4))
+        nederst = self.crop_image_from_center(bgr_image,int(image_width * 0.33), int(image_height*0.07), -int(image_width * 0.09), int(image_height*0.44)) 
+        hoyre = self.crop_image_from_center(bgr_image,int(image_width * 0.07), int(image_height*0.33), int(image_width * 0.33), int(image_height*0.1))
+        
+        ov= overst.mean()
+        nv = nederst.mean()
+        hv= hoyre.mean()
+        return (ov+nv+hv)/3
+        if(overst.mean()>nederst.mean() and overst.mean()>hoyre.mean()):
+            return overst.mean()
+        if(nederst.mean()>overst.mean() and nederst.mean() > hoyre.mean()):
+            return nederst.mean()
+        return hoyre.mean()
+        
+
+    def crop_image_from_center(self,image, crop_width, crop_height, offset_x=0, offset_y=0):
+        # Hent dimensjonene til bildet
+        image_height, image_width = image.shape[:2]
+
+        # Beregn midtpunktet av bildet
+        center_x = int(image_width*0.6)
+        center_y = image_height // 2
+
+        # Beregn start- og sluttpunkt for utsnittet
+        start_x = max(0, center_x - crop_width // 2 + offset_x)
+        end_x = min(image_width, center_x + crop_width // 2 + offset_x)
+        start_y = max(0, center_y - crop_height // 2 + offset_y)
+        end_y = min(image_height, center_y + crop_height // 2 + offset_y)
+
+        # Klipp ut bildet
+        cropped_image = image[start_y:end_y, start_x:end_x]
+        
+        return cropped_image
     
-    brightness_values = image[y_min:y_max, x_min:x_max]
-    # Beregn gjennomsnittet av lysverdiene
-    brightness = brightness_values.mean()
- 
-    return brightness
-
-def sjekk_lys_Hele_Bildet(image_path):
-    # Last inn bildet
-    image = cv2.imread(image_path)
-
-    # Hent lysverdien fra hele bildet
-    brightness_values = image
-
-    # Beregn gjennomsnittet av lysverdiene
-    brightness = brightness_values.mean()
-    return brightness
-
-def Lavt_Lysnivå_allesider_dekk(image_path):
-    """
-    This function convolves a grayscale image with
-    a Laplacian kernel and calculates its variance.
-    """
-    bgr_image = cv2.imread(image_path)
-    
-    image_height, image_width = bgr_image.shape[:2]
-    
-    imgae_size = image_height*image_width
-
-    # Klipp bildet fra sentrum av x-aksen
-    overst = crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.070), -int(image_width * 0.20), -int(image_height*0.4))
-    nederst = crop_image_from_center(bgr_image,int(image_width * 0.33), int(image_height*0.07), -int(image_width * 0.09), int(image_height*0.44)) 
-    hoyre = crop_image_from_center(bgr_image,int(image_width * 0.07), int(image_height*0.33), int(image_width * 0.33), int(image_height*0.1))
-    
-    ov= overst.mean()
-    nv = nederst.mean()
-    hv= hoyre.mean()
-    if(overst.mean()>nederst.mean() and overst.mean()>hoyre.mean()):
-        return overst.mean()
-    if(nederst.mean()>overst.mean() and nederst.mean() > hoyre.mean()):
-        return nederst.mean()
-    return hoyre.mean()
-    #return (ov+nv+hv)/3
-
-def crop_image_from_center(image, crop_width, crop_height, offset_x=0, offset_y=0):
-    # Hent dimensjonene til bildet
-    image_height, image_width = image.shape[:2]
-
-    # Beregn midtpunktet av bildet
-    center_x = int(image_width*0.6)
-    center_y = image_height // 2
-
-    # Beregn start- og sluttpunkt for utsnittet
-    start_x = max(0, center_x - crop_width // 2 + offset_x)
-    end_x = min(image_width, center_x + crop_width // 2 + offset_x)
-    start_y = max(0, center_y - crop_height // 2 + offset_y)
-    end_y = min(image_height, center_y + crop_height // 2 + offset_y)
-
-    # Klipp ut bildet
-    cropped_image = image[start_y:end_y, start_x:end_x]
-    
-    return cropped_image
-def Lysnivå_for_lav(image_path):
-   return Lavt_Lysnivå_allesider_dekk(image_path)< _LysNivå_Grense_Fult_bilde
+    def Lysnivå_for_lav(self,image_path):
+        return self.Lavt_Lysnivå_allesider_dekk(image_path)< self._LysNivå_Grense_Fult_bilde
 
 
 #------------TEST----------------------
 bilde_ = "Prosjekt/Resourses/CH_bilder/mappe_cropped/D20230725_T201021_1.png"
 bilde_to = "Prosjekt/Resourses/CH_bilder/mappe_cropped/D20230812_T150230_1.png"
 bilde_tre = "Prosjekt/Resourses/CH_bilder/CH_mappe_cropped/D20230324_T134140/D20230324_T134140_0.png"
-print(sjekk_lys_Hele_Bildet(bilde_tre))
+
 
     # referansene til bilder under kan endre seg.
     # disse resultatene er basert på en standar treshold. ikke definert i denne klassen. 

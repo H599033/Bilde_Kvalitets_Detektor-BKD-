@@ -3,8 +3,8 @@ import os
 import sys
 sys.path.append('Prosjekt/Edge')
 from Objekt import Bil
-from Lys import Lys_Detektor
-from Motion_Blur import Motion_Blur_Detektor
+from Lys.Lys_Detektor import Lys_Detektor
+from Motion_Blur.Motion_Blur_Detektor import Motion_Blur_Detektor
 import shutil
 import cv2
 from datetime import datetime
@@ -16,20 +16,28 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from torchvision.transforms import functional as F
 
+_LD = Lys_Detektor()
+_MBD = Motion_Blur_Detektor()
+
+
 _output_mappe_sti = os.path.join("Prosjekt", "Resourses", "Output_sources")
 _CH_bilder_mappe_cropped = os.path.join("Prosjekt", "Resourses", "CH_bilder","CH_mappe_cropped")
 # Her kan vi endre hvor "databasen" våres er lagret. # kanskje litt dumt å ha den som en del av pipeline?
 _Intern_database_sti = os.path.join("Prosjekt", "Resourses", "Intern_database")
+
+#Husk å implementer!!!
+_Intern_database_bilder_sti = os.path.join("Prosjekt", "Resourses", "Intern_database_bilder")
 _antall_Biler = 0
 
 def lag_alle_bil_objekt():
     #Her velges hvilken mappe objektene skal lages av.
-    innhold = os.listdir(_CH_bilder_mappe_cropped)
+    path = _CH_bilder_mappe_cropped
+    innhold = os.listdir(path)
     global _antall_Biler
     for element in innhold:
         if element != ".DS_Store": #Dette er en usynelig mappe som vi ikke ønsker å ha en del av listen
             _antall_Biler+=1 
-            _bilde_mappe_sti = os.path.join(_CH_bilder_mappe_cropped, element)
+            _bilde_mappe_sti = os.path.join(path, element)
             bil_objekt = lag_bil_objekt("Bergen",_bilde_mappe_sti)
             
             dato_Og_tid(bil_objekt)
@@ -44,9 +52,9 @@ def dato_Og_tid(bil):
     bil.tid = nå.strftime("%H:%M:%S")
     
 def sjekk_kvalitet(bil):
-    if(not Lys_Detektor.Lysnivå_for_lav(bil.hent_bilde_en())):
+    if(not _LD.Lysnivå_for_lav(bil.hent_bilde_en())):
         #legg til sjekk for urent kamera her
-       if(Motion_Blur_Detektor.is_blur(bil.hent_bilde_en())):
+       if(_MBD.is_blur(bil.hent_bilde_en())):
            bil.motion_blur = True
            #kjør debluring
            
