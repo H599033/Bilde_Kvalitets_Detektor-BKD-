@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 import cv2
-
+import numpy as np
 
 
 class Motion_Blur_Detektor():
@@ -109,7 +109,33 @@ class Motion_Blur_Detektor():
         
         return cropped_image
 
+    def detect_water_droplets(self,image, threshold_area=100):
+    # Les inn bildet
+        # Konverter til gråskala
+        
+        if image is None:
+            print("Kunne ikke lese inn bildet. Sørg for at filbanen er riktig.")
+            return
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Bruk en Gaussisk blur for å redusere støy
+        blurred = cv2.GaussianBlur(gray_image, (5, 5), 0)
 
+        # Bruk adaptiv terskeling for å segmentere de hvite prikkene
+        _, thresholded = cv2.threshold(blurred, 240, 255, cv2.THRESH_BINARY)
+        thresholded = np.uint8(thresholded)
+        # Finn konturene i det terskelerte bildet
+        contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        antall= 0
+        # Loop gjennom konturene
+        for contour in contours:
+            # Beregn området til konturen
+            area = cv2.contourArea(contour)
+
+            # Hvis området er større enn terskelverdien, anta at det er en vanndråpe
+            if area > threshold_area:
+                antall+=1
+         
+        return antall 
 
 
     def is_blur(self,image_path):
@@ -120,10 +146,11 @@ class Motion_Blur_Detektor():
         image = cv2.imread(image_path)
 
         varianse = self.diferanse_varianse_overst_nederst(image)
-        
+        dråper = self.detect_water_droplets(image)
         #print(filename + " var: " + str(lysnivå))
         lys = self.Lavt_Lysnivå_allesider_dekk(image_path)
-        
+        if(dråper>40):
+            return True
         if(lys>60 and varianse>3):
             return True
         if(lys<60 and varianse > 1.5):

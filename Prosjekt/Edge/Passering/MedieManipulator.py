@@ -9,8 +9,6 @@ import matplotlib.pyplot as plt
 import math
 
 class CH_Bilder_Manipulator:
-
-    
     
     
     def __init__(self):
@@ -156,6 +154,8 @@ class CH_Bilder_Manipulator:
         tensor_image_nedre = torch.tensor(nederst / 255.0, dtype=torch.float)  # Normaliserer verdier til [0, 1]
         tensor_image_hoyre= torch.tensor(hoyre / 255.0, dtype=torch.float)  # Normaliserer verdier til [0, 1]
         
+        
+        støy = self.measure_noise_level(overst)
         # Beregn variansene til bildene
         variance_over = tensor_image_overst.var()
         #print(f'over: {variance_over}')
@@ -166,7 +166,7 @@ class CH_Bilder_Manipulator:
         # Returner differansen i variansene
       #  var =variance_over - variance_nedre
         #print(f'varianse: {var}')
-     
+        
         return abs(variance_over/variance_nedre)
     
     def Lavt_Lysnivå_allesider_dekk_fungerenede(self,image_path):
@@ -194,7 +194,19 @@ class CH_Bilder_Manipulator:
             return nederst.mean()
         return hoyre.mean()
     #return (ov+nv+hv)/3
-    
+    def measure_noise_level(self,image):
+    # Les inn bildet
+
+        # Konverter til gråskala
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        # Beregn differansen mellom piksler ved å bruke Laplacian-funksjonen
+        laplacian = cv2.Laplacian(image, cv2.CV_64F)
+
+        # Beregn gjennomsnittlig absolutt differanse
+        mean_abs_diff = np.mean(np.abs(laplacian))
+        
+        return mean_abs_diff
     
     def copy_image_to_folder(self,original_image_path, destination_folder):
     # Sjekk om destinasjonsmappen eksisterer, hvis ikke, opprett den
@@ -326,6 +338,8 @@ class CH_Bilder_Manipulator:
                 imagepath = os.path.join(folder_path, filename)                
                 n+=1
                 image = cv2.imread(imagepath)
+                
+                
                 # Calculate variance using your function
                 varianse = self.diferanse_varianse_overst_nederst(image)
                 
@@ -333,13 +347,19 @@ class CH_Bilder_Manipulator:
                 #print(filename + " var: " + str(lysnivå))
                 lys = self.Lavt_Lysnivå_allesider_dekk(imagepath)
                 
-                if(lys >60 and varianse>3):
+                dråper = self.detect_water_droplets(image) 
+                list.append(dråper)
+                
+                if(dråper>40):
+                    print(f'bilde: {imagepath} antall dråper: {dråper}')
+                """
+                                if(lys >60 and varianse>3):
                     #self.copy_image_to_folder(imagepath,"Prosjekt/Resourses/CH_bilder/detekted_blur")
                     lysover.append(varianse)
                 if(lys<60 and varianse > 1.5):
                     #self.copy_image_to_folder(imagepath,"Prosjekt/Resourses/CH_bilder/detekted_blur")
                     lysounder.append(varianse)
-                """
+                
                 if(varianse < 2.3):
                     variance_list.append(varianse)
                     self.copy_image_to_folder(imagepath,"Prosjekt/Resourses/CH_bilder/detekted_blur")
@@ -361,6 +381,34 @@ class CH_Bilder_Manipulator:
         plt.title(f'Histogram for diferansen øverst og nederst på dekk, mappe {os.path.basename(folder_path)}\n med sampling = 80 antall = {n} Snitt varianse = {snitt}')
         plt.legend(loc='upper right')     
         plt.show()
+    
+    def detect_water_droplets(self,image, threshold_area=100):
+    # Les inn bildet
+        # Konverter til gråskala
+        
+        if image is None:
+            print("Kunne ikke lese inn bildet. Sørg for at filbanen er riktig.")
+            return
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Bruk en Gaussisk blur for å redusere støy
+        blurred = cv2.GaussianBlur(gray_image, (5, 5), 0)
+
+        # Bruk adaptiv terskeling for å segmentere de hvite prikkene
+        _, thresholded = cv2.threshold(blurred, 240, 255, cv2.THRESH_BINARY)
+        thresholded = np.uint8(thresholded)
+        # Finn konturene i det terskelerte bildet
+        contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        antall= 0
+        # Loop gjennom konturene
+        for contour in contours:
+            # Beregn området til konturen
+            area = cv2.contourArea(contour)
+
+            # Hvis området er større enn terskelverdien, anta at det er en vanndråpe
+            if area > threshold_area:
+                antall+=1
+         
+        return antall   
     
     def Lavt_Lysnivå_allesider_dekk(self, image_path):
         """
