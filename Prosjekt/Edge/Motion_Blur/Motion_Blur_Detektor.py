@@ -137,6 +137,13 @@ class Motion_Blur_Detektor():
          
         return antall 
 
+    def is_Wet(self,image_path):
+        image = cv2.imread(image_path)
+        dråper = self.detect_water_droplets(image)
+        
+        if(dråper>40):
+            return True
+        return False
 
     def is_blur(self,image_path):
         """
@@ -146,12 +153,10 @@ class Motion_Blur_Detektor():
         image = cv2.imread(image_path)
 
         varianse = self.diferanse_varianse_overst_nederst(image)
-        dråper = self.detect_water_droplets(image)
+
         #print(filename + " var: " + str(lysnivå))
         lys = self.Lavt_Lysnivå_allesider_dekk(image_path)
-        if(dråper>40):
-            return True
-        if(lys>60 and varianse>3):
+        if(lys>60 and varianse>3.5):
             return True
         if(lys<60 and varianse > 1.5):
             return True

@@ -52,16 +52,16 @@ def dato_Og_tid(bil):
     bil.tid = nå.strftime("%H:%M:%S")
     
 def sjekk_kvalitet(bil):
-    if(not _LD.Lysnivå_for_lav(bil.hent_bilde_en())):
+    if(_LD.Lysnivå_for_lav(bil.hent_bilde_en())):
         #legg til sjekk for urent kamera her
-       if(_MBD.is_blur(bil.hent_bilde_en())):
+        bil.lav_belysning = True
+    if(_MBD.is_blur(bil.hent_bilde_en())):
            bil.motion_blur = True
-           #kjør debluring
-           
+           #kjør debluring           
            #TEMP legger bare til ett bilde i listen.
            bil.redigerte_bilder.append(bil.hent_bilde_en())
-    else :
-        bil.lav_belysning = True
+    if(_MBD.is_Wet(bil.hent_bilde_en())):
+        bil.Wet = True
 
 def lag_bil_objekt (sted, _mappe_sti):
     bil = Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))

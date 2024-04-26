@@ -155,7 +155,6 @@ class CH_Bilder_Manipulator:
         tensor_image_hoyre= torch.tensor(hoyre / 255.0, dtype=torch.float)  # Normaliserer verdier til [0, 1]
         
         
-        støy = self.measure_noise_level(overst)
         # Beregn variansene til bildene
         variance_over = tensor_image_overst.var()
         #print(f'over: {variance_over}')
@@ -350,7 +349,7 @@ class CH_Bilder_Manipulator:
                 dråper = self.detect_water_droplets(image) 
                 list.append(dråper)
                 
-                if(dråper>40):
+                if(dråper>1):
                     print(f'bilde: {imagepath} antall dråper: {dråper}')
                 """
                                 if(lys >60 and varianse>3):
@@ -389,7 +388,9 @@ class CH_Bilder_Manipulator:
         if image is None:
             print("Kunne ikke lese inn bildet. Sørg for at filbanen er riktig.")
             return
-        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        overst = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
+        
+        gray_image = cv2.cvtColor(overst, cv2.COLOR_BGR2GRAY)
         # Bruk en Gaussisk blur for å redusere støy
         blurred = cv2.GaussianBlur(gray_image, (5, 5), 0)
 
@@ -829,7 +830,18 @@ dekk= "Prosjekt/Resourses/CH_bilder/mappe_cropped/D20230324_T134042_0.png"
 #bm.calculate_variance_histogram_folder(cropped_Mappe_Path)
 mappe = "Prosjekt/Resourses/CH_bilder/ikke_blur"
 #print(bm.diferanse_varianse_overst_nederst(blurTo))
-#
+
+
+
+bgr_image = cv2.imread("Prosjekt/Resourses/CH_bilder/ikke_blur/D20231115_T151241_1.png")
+
+image_height, image_width = bgr_image.shape[:2]
+
+imgae_size = image_height*image_width
+
+# Klipp bildet fra sentrum av x-aksen
+overst = bm.crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
+
 
 #print(f'retur= {bm.diferanse_varianse_overst_nederst(dekk)}')
 #bm.flytt_bilder(CH_Mappe_Path,cropped_Mappe_Path)
