@@ -40,16 +40,27 @@ def lag_alle_bil_objekt():
             _bilde_mappe_sti = os.path.join(path, element)
             bil_objekt = lag_bil_objekt("Bergen",_bilde_mappe_sti)
             
-            dato_Og_tid(bil_objekt)
+            dato_Og_tid(bil_objekt, _bilde_mappe_sti)
             sjekk_kvalitet(bil_objekt)            
                       
-            print("bil nummer :" + str(_antall_Biler )+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur) )            
+            print("bil nummer :" + str(_antall_Biler )+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur)  + ". V = "+ str(bil_objekt.vaatt_dekk))            
             bil_objekt.lagre_til_fil(ny_objekt_fil(_Intern_database_sti, _antall_Biler))
 
-def dato_Og_tid(bil):
+def dato_Og_tid(bil, _bilde_mappe_sti):
     nå = datetime.now()
-    bil.dato = nå.strftime("%Y-%m-%d")
-    bil.tid = nå.strftime("%H:%M:%S")
+    parts = _bilde_mappe_sti.split('\\')
+
+    # Get the part containing the date and time information
+    date_time_part = parts[-1] 
+
+    # Split the date_time_part using underscore as a delimiter to separate date and time
+    date, time = date_time_part[1:].split('_')  
+    time = time[1:]
+
+    formatted_date = datetime.strptime(date, "%Y%m%d").strftime("%Y-%m-%d")
+    formatted_time = time[:2] + ":" + time[2:4] + ":" + time[4:]  # Assuming time is in HHMMSS format
+    bil.dato = formatted_date
+    bil.tid = formatted_time
     
 def sjekk_kvalitet(bil):
     if(_LD.Lysnivå_for_lav(bil.hent_bilde_en())):
@@ -61,7 +72,7 @@ def sjekk_kvalitet(bil):
            #TEMP legger bare til ett bilde i listen.
            bil.redigerte_bilder.append(bil.hent_bilde_en())
     if(_MBD.is_Wet(bil.hent_bilde_en())):
-        bil.Wet = True
+        bil.vaatt_dekk = True
 
 def lag_bil_objekt (sted, _mappe_sti):
     bil = Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
