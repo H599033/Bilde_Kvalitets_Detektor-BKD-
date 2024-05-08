@@ -32,6 +32,7 @@ _antall_Biler = 0
 
 def lag_alle_bil_objekt(Video_slicer=False):
     #Her velges hvilken mappe objektene skal lages av.
+    print('Prossesering start')
     if(Video_slicer):
         path=_output_mappe_sti
     else:
@@ -53,6 +54,7 @@ def lag_alle_bil_objekt(Video_slicer=False):
                       
             #print("bil nummer :" + str(_antall_Biler )+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur)  + ". V = "+ str(bil_objekt.vaatt_dekk))            
             bil_objekt.lagre_til_fil(ny_objekt_fil(_Intern_database_sti, _antall_Biler))
+    print('Prossesering slutt')
 
 def dato_Og_tid(bil, _bilde_mappe_sti):
     nå = datetime.now()
