@@ -27,9 +27,10 @@ $(document).ready(function () {
             if (index !== 0) {
                 $row = $(this);
 
-                var motionBlur = $row.find("td:eq(4)").text().indexOf("Motion blur: ✖") > -1;
-                var lavBelysning = $row.find("td:eq(4)").text().indexOf("Lav belysning: ✖") > -1;
-                var urentKamera = $row.find("td:eq(4)").text().indexOf("Skittent kamera: ✖") > -1;
+                var motionBlur = $row.find("td:eq(4)").text().indexOf("Motion blur: ✔") > -1;
+                var lavBelysning = $row.find("td:eq(4)").text().indexOf("Lav belysning: ✔") > -1;
+                var vaatDekk = $row.find("td:eq(4)").text().indexOf("Vått dekk: ✔") > -1;
+                var urentKamera = $row.find("td:eq(4)").text().indexOf("Skittent kamera: ✔") > -1;
                 var godkjent = $row.find("td:eq(4)").text().indexOf("Kvalitet: ✔") > -1;
                 var rowDate = new Date($row.find("td:eq(3)").text());
                 var rowTime = $row.find("td:eq(2)").text();
@@ -41,6 +42,7 @@ $(document).ready(function () {
                     (kvalitetValue === "godkjent" && godkjent)||  
                     (kvalitetValue === "motion_blur" && motionBlur) ||
                     (kvalitetValue === "lav_belysning" && lavBelysning) ||
+                    (kvalitetValue === "vaatt_dekk" && vaatDekk) ||
                     (kvalitetValue === "urent_kamera" && urentKamera));
 
                 var dateMatch = (!startDateValue || rowDate >= startDateValue) && (!endDateValue || rowDate <= endDateValue);
@@ -82,14 +84,22 @@ $(document).ready(function () {
             row.append("<td><p>" + value.tid + "</p></td>");
             row.append("<td><p>" + value.dato + "</p></td>");
             var qualityIndicator = "";
+
+            if(Boolean(value.motion_blur) == true || Boolean(value.lav_belysning) == true || Boolean(value.vaatt_dekk) == true || Boolean(value.urent_kamera) == true){
+                qualityIndicator += "Kvalitet: " + "<span style='color:red;'>✖</span>" + "<br>";
+            }
+
             if (Boolean(value.motion_blur) == true) {
-                qualityIndicator += "Motion blur: " + "<span style='color:red;'>✖</span>";
+                qualityIndicator += "Motion blur: " + "<span style='color:green;'>✔</span>" + "<br>";
             }
             if (Boolean(value.lav_belysning) == true) {
-                qualityIndicator += "Lav belysning: " + "<span style='color:red;'>✖</span>";
+                qualityIndicator += "Lav belysning: " + "<span style='color:green;'>✔</span>" + "<br>";
+            }
+            if (Boolean(value.vaatt_dekk) == true) {
+                qualityIndicator += "Vått dekk: " + "<span style='color:green;'>✔</span>" + "<br>";
             }
             if (Boolean(value.urent_kamera) == true) {
-                qualityIndicator += "Skittent kamera: " + "<span style='color:red;'>✖</span>";
+                qualityIndicator += "Skittent kamera: " + "<span style='color:green;'>✔</span>" + "<br>";
             }
             if (qualityIndicator === "") {
                 qualityIndicator = "Kvalitet: " + "<span style='color:green;'>✔</span>";
