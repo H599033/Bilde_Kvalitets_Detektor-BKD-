@@ -72,7 +72,7 @@ def sjekk_kvalitet(bil):
            #kjør debluring           
            #TEMP legger bare til ett bilde i listen.
            bil.redigerte_bilder.append(bil.hent_bilde_en())
-    if(_MBD.is_Wet(bil.hent_bilde_en())):
+    if(_vann.is_Wet(bil.hent_bilde_en())):
         bil.vaatt_dekk = True
 
 def lag_bil_objekt (sted, _mappe_sti):
