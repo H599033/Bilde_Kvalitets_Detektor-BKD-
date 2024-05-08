@@ -30,9 +30,12 @@ _Intern_database_sti = os.path.join("Prosjekt", "Resourses", "Intern_database")
 _Intern_database_bilder_sti = os.path.join("Prosjekt", "Resourses", "Intern_database_bilder")
 _antall_Biler = 0
 
-def lag_alle_bil_objekt():
+def lag_alle_bil_objekt(Video_slicer=False):
     #Her velges hvilken mappe objektene skal lages av.
-    path = _CH_bilder_mappe_cropped
+    if(Video_slicer):
+        path=_output_mappe_sti
+    else:
+        path = _CH_bilder_mappe_cropped
     innhold = os.listdir(path)
     global _antall_Biler
     for element in innhold:
@@ -40,8 +43,12 @@ def lag_alle_bil_objekt():
             _antall_Biler+=1 
             _bilde_mappe_sti = os.path.join(path, element)
             bil_objekt = lag_bil_objekt("Bergen",_bilde_mappe_sti)
-            
-            dato_Og_tid(bil_objekt, _bilde_mappe_sti)
+            if (Video_Slicer):
+                nå = datetime.now()
+                bil_objekt.dato = nå.strftime("%Y-%m-%d")
+                bil_objekt.tid = nå.strftime("%H:%M:%S")
+            else:    
+                dato_Og_tid(bil_objekt, _bilde_mappe_sti)
             sjekk_kvalitet(bil_objekt)            
                       
             #print("bil nummer :" + str(_antall_Biler )+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur)  + ". V = "+ str(bil_objekt.vaatt_dekk))            

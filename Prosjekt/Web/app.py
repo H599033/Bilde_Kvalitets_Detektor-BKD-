@@ -7,10 +7,7 @@ import DbService
 class Nettside():
     def start(self):
         
-        static_folder=os.path.abspath('Prosjekt')
-        
-        
-        app = Flask(__name__, static_folder)
+        app = Flask(__name__, static_folder='Prosjekt')
         
         @app.route('/')
         def home():
@@ -58,4 +55,4 @@ class Nettside():
         def serve_logo(filename):
             return send_file(os.path.join('templates', filename), mimetype='image/png')
         
-        app.run(debug=True)
+        app.run(debug=True,use_reloader=False)
