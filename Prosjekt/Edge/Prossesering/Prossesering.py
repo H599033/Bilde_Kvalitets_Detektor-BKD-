@@ -3,9 +3,9 @@ import os
 import sys
 sys.path.append('Prosjekt/Edge')
 from Objekt import Bil
-from Lys.Lys_Detektor import Lys_Detektor
-from Motion_Blur.Motion_Blur_Detektor import Motion_Blur_Detektor
-from Vann.Vann_detektor import Vann_detektor
+from Detektorer.Lys.Lys_Detektor import Lys_Detektor
+from Detektorer.Motion_Blur.Motion_Blur_Detektor import Motion_Blur_Detektor
+from Detektorer.Vann.Vann_detektor import Vann_detektor
 import shutil
 import cv2
 from datetime import datetime

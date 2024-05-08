@@ -4,7 +4,7 @@ import pickle
 
 class Bil:
     # Konstruktør bil, bør legge til 2 bilde variabler, en for prosessert bilder, en uten.
-    def __init__(self, sted, orginal_bilder, redigerte_bilder=None, ID=None, tid=None, dato=None, motion_blur=False, lav_belysning=False, Vått_dekk=False):
+    def __init__(self, sted, orginal_bilder, redigerte_bilder=None, ID=None, tid=None, dato=None, motion_blur=False, lav_belysning=False, Wet=False):
         self.ID = ID if ID is not None else "Default_ID"
         self.tid = tid if tid is not None else "Default_tid"
         self.dato = dato if dato is not None else "Default_dato"
@@ -13,7 +13,7 @@ class Bil:
         self.redigerte_bilder = redigerte_bilder if redigerte_bilder is not None else []
         self.motion_blur = motion_blur
         self.lav_belysning = lav_belysning
-        self.Vått_dekk = Vått_dekk
+        self.Wet = Wet
 
     def lagre_til_fil(self, filnavn):
         print("Lagrer fil " + filnavn)

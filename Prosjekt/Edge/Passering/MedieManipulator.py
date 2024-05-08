@@ -2,11 +2,8 @@ import os
 import shutil
 import cv2
 import numpy as np
-import random
 import torch
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
-import math
 import pickle
 import sys
 sys.path.append('Prosjekt/Edge')
@@ -423,8 +420,8 @@ class CH_Bilder_Manipulator:
             _, thresholded = cv2.threshold(image, 240, 255, cv2.THRESH_BINARY)
             thresholded = np.uint8(thresholded)
         else:
-            overst_Venstre = bm.crop_image_from_center(blurred, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
-            nederst_Hoyre = bm.crop_image_from_center(blurred, int(image_width * 0.4), int(image_height*0.700),int(image_width*0.3),int(image_height/2))
+            overst_Venstre = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
+            nederst_Hoyre = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.700),int(image_width*0.3),int(image_height/2))
             
             _, thresholded_OV = cv2.threshold(overst_Venstre, nedre_grense, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             thresholded_OV = np.uint8(thresholded_OV)
