@@ -5,6 +5,7 @@ sys.path.append('Prosjekt/Edge')
 from Objekt import Bil
 from Lys.Lys_Detektor import Lys_Detektor
 from Motion_Blur.Motion_Blur_Detektor import Motion_Blur_Detektor
+from Vann.Vann_detektor import Vann_detektor
 import shutil
 import cv2
 from datetime import datetime
@@ -18,7 +19,7 @@ from torchvision.transforms import functional as F
 
 _LD = Lys_Detektor()
 _MBD = Motion_Blur_Detektor()
-
+_vann = Vann_detektor()
 
 _output_mappe_sti = os.path.join("Prosjekt", "Resourses", "Output_sources")
 _CH_bilder_mappe_cropped = os.path.join("Prosjekt", "Resourses", "CH_bilder","CH_mappe_cropped")
@@ -60,7 +61,7 @@ def sjekk_kvalitet(bil):
            #kjør debluring           
            #TEMP legger bare til ett bilde i listen.
            bil.redigerte_bilder.append(bil.hent_bilde_en())
-    if(_MBD.is_Wet(bil.hent_bilde_en())):
+    if(_vann.is_Wet(bil.hent_bilde_en())):
         bil.Wet = True
 
 def lag_bil_objekt (sted, _mappe_sti):

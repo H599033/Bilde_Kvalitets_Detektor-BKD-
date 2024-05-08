@@ -7,6 +7,11 @@ import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import math
+import pickle
+import sys
+sys.path.append('Prosjekt/Edge')
+from Objekt import Bil
+
 
 class CH_Bilder_Manipulator:
     
@@ -111,7 +116,7 @@ class CH_Bilder_Manipulator:
         variance = tensor_image.var()
         return variance
         
-    def diferanse_varianse_overst_nederst(self, image):
+    def diferanse_varianse_overst_nederst(self, image ,snitt=False):
         """
         This function convolves a grayscale image with
         a Laplacian kernel and calculates its variance.
@@ -157,6 +162,7 @@ class CH_Bilder_Manipulator:
         
         # Beregn variansene til bildene
         variance_over = tensor_image_overst.var()
+        
         #print(f'over: {variance_over}')
         variance_nedre = tensor_image_nedre.var()
         #print(f'nedre: {variance_nedre}')
@@ -165,7 +171,8 @@ class CH_Bilder_Manipulator:
         # Returner differansen i variansene
       #  var =variance_over - variance_nedre
         #print(f'varianse: {var}')
-        
+        if snitt:
+            return variance_over+variance_nedre+variance_hoyre / 3
         return abs(variance_over/variance_nedre)
     
     def Lavt_Lysnivå_allesider_dekk_fungerenede(self,image_path):
@@ -326,8 +333,8 @@ class CH_Bilder_Manipulator:
         variance_list = []
         list =[]
         lysover= []
-        lysounder= []
-        
+        lysounder= []                
+
         n=0
         snitt=0
         # Iterate through images in the folder
@@ -346,11 +353,29 @@ class CH_Bilder_Manipulator:
                 #print(filename + " var: " + str(lysnivå))
                 lys = self.Lavt_Lysnivå_allesider_dekk(imagepath)
                 
-                dråper = self.detect_water_droplets(image) 
-                list.append(dråper)
+                image_height, image_width = image.shape[:2]
                 
-                if(dråper>1):
-                    print(f'bilde: {imagepath} antall dråper: {dråper}')
+                overst_Venstre = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))            
+                nederst_Hoyre = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(image_width*0.3),int(image_height/2))
+                        
+                gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                # Bruk en Gaussisk blur for å redusere støy
+                blurred = cv2.GaussianBlur(gray_image, (11, 11), 0)
+                
+                
+                overst_Venstre = self.mask_im_ov(blurred)
+                nederst_Hoyre = self.mask_im_NH(blurred)
+                #overst_Venstre = bm.crop_image_from_center(gray_image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))            
+                #nederst_Hoyre = bm.crop_image_from_center(gray_image, int(image_width * 0.4), int(image_height*0.500),int(image_width*0.3),int(image_height/2))
+
+                dråper_ov = self.detect_water_droplets(overst_Venstre)
+                dråper_NH = self.detect_water_droplets(nederst_Hoyre)
+                gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                # Bruk en Gaussisk blur for å redusere støy
+                blurred = cv2.GaussianBlur(gray_image, (11, 11), 0)
+                dråper = self.detect_water_droplets(blurred)
+                variance_list.append(dråper)
+
                 """
                                 if(lys >60 and varianse>3):
                     #self.copy_image_to_folder(imagepath,"Prosjekt/Resourses/CH_bilder/detekted_blur")
@@ -371,9 +396,9 @@ class CH_Bilder_Manipulator:
         #snitt = "{:.4f}".format(snitt/n)
         # Plot histogram
         plt.hist(variance_list, bins=20, edgecolor='black')
-        plt.hist(list, bins=20, edgecolor='black', color='red')
-        plt.hist(lysover, bins=20, edgecolor='black', color='yellow')
-        plt.hist(lysounder, bins=20, edgecolor='black', color='orange') 
+        #plt.hist(list, bins=20, edgecolor='black', color='red')
+        #plt.hist(lysover, bins=20, edgecolor='black', color='yellow')
+        #plt.hist(lysounder, bins=20, edgecolor='black', color='orange') 
 
         plt.xlabel('Varianse')
         plt.ylabel('Frekvense')
@@ -381,22 +406,31 @@ class CH_Bilder_Manipulator:
         plt.legend(loc='upper right')     
         plt.show()
     
-    def detect_water_droplets(self,image, threshold_area=100):
+    def detect_water_droplets(self,image, threshold_area=100,Delt_bilde = False):
     # Les inn bildet
         # Konverter til gråskala
         
         if image is None:
             print("Kunne ikke lese inn bildet. Sørg for at filbanen er riktig.")
             return
-        overst = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
-        
-        gray_image = cv2.cvtColor(overst, cv2.COLOR_BGR2GRAY)
-        # Bruk en Gaussisk blur for å redusere støy
-        blurred = cv2.GaussianBlur(gray_image, (5, 5), 0)
+         
 
+        image_height, image_width = image.shape[:2]
+        nedre_grense = 240
+        
         # Bruk adaptiv terskeling for å segmentere de hvite prikkene
-        _, thresholded = cv2.threshold(blurred, 240, 255, cv2.THRESH_BINARY)
-        thresholded = np.uint8(thresholded)
+        if not Delt_bilde:
+            _, thresholded = cv2.threshold(image, 240, 255, cv2.THRESH_BINARY)
+            thresholded = np.uint8(thresholded)
+        else:
+            overst_Venstre = bm.crop_image_from_center(blurred, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
+            nederst_Hoyre = bm.crop_image_from_center(blurred, int(image_width * 0.4), int(image_height*0.700),int(image_width*0.3),int(image_height/2))
+            
+            _, thresholded_OV = cv2.threshold(overst_Venstre, nedre_grense, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            thresholded_OV = np.uint8(thresholded_OV)
+            _, thresholded_NH = cv2.threshold(nederst_Hoyre, nedre_grense, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        
+            
         # Finn konturene i det terskelerte bildet
         contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         antall= 0
@@ -404,14 +438,20 @@ class CH_Bilder_Manipulator:
         for contour in contours:
             # Beregn området til konturen
             area = cv2.contourArea(contour)
-
+            
+            if Delt_bilde:
+                if area > thresholded_OV:
+                    antall+=1
+                if area > thresholded_NH:
+                    antall +=1
+            else:
             # Hvis området er større enn terskelverdien, anta at det er en vanndråpe
-            if area > threshold_area:
-                antall+=1
+                if area > threshold_area:
+                    antall+=1
          
-        return antall   
+        return antall
     
-    def Lavt_Lysnivå_allesider_dekk(self, image_path):
+    def Lavt_Lysnivå_allesider_dekk(self, image_path,mb=False):
         """
         This function convolves a grayscale image with
         a Laplacian kernel and calculates its variance.
@@ -431,8 +471,8 @@ class CH_Bilder_Manipulator:
         ov= overst.mean()
         nv = nederst.mean()
         hv= hoyre.mean()
-        
-        #return (ov+nv+hv)/3
+        if mb:
+            return (ov+nv+hv)/3
         if(overst.mean()>nederst.mean() and overst.mean()>hoyre.mean()):
             return overst.mean()
         if(nederst.mean()>overst.mean() and nederst.mean() > hoyre.mean()):
@@ -795,9 +835,161 @@ class CH_Bilder_Manipulator:
         antall_piksler = høyde * bredde
         
         return antall_piksler
+     
+    def is_blur(self,image_path,Lysverdi,verdi = False):
+        """
+        This function convolves a grayscale image with
+        a Laplacian kernel and calculates its variance.
+        """
+        image = cv2.imread(image_path)
+
+        snitt = self.diferanse_varianse_overst_nederst(image,True)
+        varianse = self.diferanse_varianse_overst_nederst(image)
+        if(Lysverdi>60 and snitt<0.015):
+            return True
+        if(Lysverdi<60 and snitt<0.02):        
+            return True
+        #print(filename + " var: " + str(lysnivå))
+        if(verdi):
+            return varianse
+        if(Lysverdi>70 and varianse>3.5):
+            #print(f'høy lys verdi = {image_path}')
+            return True
+        if(Lysverdi<70 and varianse > 1.5):
+            #print(f'Lav lys verdi = {image_path}')
+            return True
+        return False    
+    
+    def mask_im_ov (self,gray_image):
+        image_height, image_width = gray_image.shape[:2]
+        mask = np.zeros_like(gray_image)
+        
+        start_x = int(image_width * 0.4)
+        start_y = int(image_height * 0.5)
+        end_x = int(image_width * 0.9)  # Eksempel på slutten av rektangelet (juster etter behov)
+        end_y = int(image_height * 0.9)  # Eksempel på slutten av rektangelet (juster etter behov)
+
+        # Tegn et rektangel på masken
+        cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255), thickness=cv2.FILLED)
+
+        # Bruk bitwise_and for å beholde bare piksler innenfor området definert av masken
+        overst_Venstre_masked = cv2.bitwise_and(gray_image, gray_image, mask=mask)
+
+        # Sett alt utenfor det definerte området til svart
+        overst_Venstre = gray_image.copy()  # Kopier originalbildet
+        overst_Venstre[mask == 0] = 0
+        return overst_Venstre
+    
+    def mask_im_NH (self,gray_image):
+        
+        image_height, image_width = gray_image.shape[:2]
+        mask = np.zeros_like(gray_image)
+        
+        start_x = int(image_width * 0.4)
+        start_y = int(image_height * 0.5)
+        end_x = int(image_width * 0.7)  # Tilpasset verdien basert på image_width og preferanse
+        end_y = int(image_height * 0.75)  # Tilpasset verdien basert på image_height og preferanse
+
+        # Tegn et rektangel på masken
+        cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255), thickness=cv2.FILLED)
+
+        # Bruk bitwise_and for å beholde bare piksler innenfor området definert av masken
+        overst_Venstre_masked = cv2.bitwise_and(gray_image, gray_image, mask=mask)
+
+        # Sett alt utenfor det definerte området til svart
+        overst_Venstre = gray_image.copy()  # Kopier originalbildet
+        overst_Venstre[mask == 0] = 0
+        return overst_Venstre
+    
+    def is_Wet(self,image_path,lystall,antall=False):
+        image = cv2.imread(image_path)
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Bruk en Gaussisk blur for å redusere støy
+        blurred = cv2.GaussianBlur(gray_image, (11, 11), 0)
         
         
+        overst_Venstre = self.mask_im_ov(blurred)
+        nederst_Hoyre = self.mask_im_NH(blurred)
+        #overst_Venstre = bm.crop_image_from_center(gray_image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))            
+        #nederst_Hoyre = bm.crop_image_from_center(gray_image, int(image_width * 0.4), int(image_height*0.500),int(image_width*0.3),int(image_height/2))
+
+        dråper_ov = self.detect_water_droplets(overst_Venstre,150)
+        dråper_NH = self.detect_water_droplets(nederst_Hoyre,150)
+        lys = self.Lavt_Lysnivå_allesider_dekk(image_path,True)
+        dråper = self.detect_water_droplets(blurred)
+        if antall:
+            return dråper
+        if(dråper>30):
+            #print(f'{image_path} , antall dråper = {dråper}  lys , {lys}')
+            return True
+        if(lys<50 and dråper>23):            
+            return True
+        return False
+       
+    def Confusion_matrix(self,folder_path ):
+        true_Positiv =0
+        false_Positiv = 0
+        true_Negativ = 0
+        false_Negativ= 0
+         # Iterate through images in the folder
+        for filename in os.listdir(folder_path):
+            if filename.endswith(".png") or filename.endswith(".jpg"):
+                image_path = os.path.join(folder_path, filename)                
+                image = cv2.imread(image_path)
+                lystall =self.Lavt_Lysnivå_allesider_dekk(image_path)
+                lys = lystall < 55
+                mbVerdi = self.is_blur(image_path,lystall,True)
+                mb = self.is_blur(image_path,lystall)
+                wtTall = self.is_Wet(image_path,lystall,True)
+                wet = self.is_Wet(image_path,lystall)
+                snittvar = self.diferanse_varianse_overst_nederst(image,True)
+                god = not lys and not mb and not wet
+                
+                if(god and 'ok' in filename.lower()):
+                    true_Positiv+=1
+                elif(god and 'ok' not in filename.lower() ):
+                    #print(f'falsk positiv = {image_path} lys = {lystall} , mb = {mbVerdi} , Snitt MB ={snittvar} ,wet = {wtTall}')
+                    """
+                    cv2.imshow(f'falsk positiv = {image_path}',image)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+                    """
+
+                    false_Positiv +=1
+                elif(not god and 'ok' not in filename.lower()):
+                    true_Negativ +=1
+                elif(not god and 'ok' in filename.lower()):
+                    
+                    """
+                    cv2.imshow(f'falsk negativ = {image_path}',image)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+                    """
+                    dråper = self.is_Wet(image_path,True)
+                    
+                    print(f'falsk negativ = {image_path} lys = {lys} , mb = {mb} , wet = {wet}')
+                    false_Negativ +=1
+                else:
+                    print("feil i sjekk")
         
+        values = [true_Positiv, false_Positiv, true_Negativ, false_Negativ]
+        colors = ['green', 'red', 'blue', 'orange']
+        labels = [f'True Positive \n {true_Positiv}', f'False Positive \n {false_Positiv}', f'True Negative \n {true_Negativ}', f'False Negative \n {false_Negativ}']
+        print(f'True positiv = {true_Positiv}')
+        print(f'False positiv = {false_Positiv}')
+        print(f'True Negativ = {true_Negativ}')
+        print(f'False Negativ = {false_Negativ}')
+        # Lag et histogram
+        plt.bar(labels, values, color=colors)
+
+        # Legg til etiketter og tittel
+        plt.xlabel('Kategorier')
+        plt.ylabel('Antall')
+        plt.title('Confusion matrix for gode bilder')
+
+        # Vis histogrammet
+        plt.show()                        
+                
 #----------------------------------Test---------------------------
 project_root = "Prosjekt"
 
@@ -817,36 +1009,45 @@ CH_orginal_Bilder_path = os.path.join(project_root, "Resourses", "CH_bilder", "O
 CH_MB_Bilder_path = os.path.join(project_root, "Resourses", "CH_bilder", "Lagt_til_Motion_blur")
 
 bm = CH_Bilder_Manipulator()
-"""
-blur= "Prosjekt/Resourses/CH_bilder/motion/1000us/D20240315_T110137_1.png"
-blurTo="Prosjekt/Resourses/CH_bilder/blurred_tires_cropped/1000us/D20240315_T110133_0.png"
-blur_M= "Prosjekt/Resourses/CH_bilder/blurred_tires_cropped/500us/D20240315_T105856_1.png"
-perf = "Prosjekt/Resourses/CH_bilder/mappe_cropped/D20230324_T134140_0.png"
-wka = "Prosjekt/Resourses/CH_bilder/mappe_cropped/D20230324_T134153_2.png"
-dekk= "Prosjekt/Resourses/CH_bilder/mappe_cropped/D20230324_T134042_0.png"
-"""
+
+bilde = "Prosjekt/Resourses/CH_bilder/ikke_blur/D20240121_T235334_1_WET.png"
+
+bm.Confusion_matrix(ikke_blur)
+
 #test= "Prosjekt/Resourses/CH_bilder/ikke_blur/D20240121_T235334_1.png"
 #HUSK SAMPLING
 #bm.calculate_variance_histogram_folder(cropped_Mappe_Path)
 mappe = "Prosjekt/Resourses/CH_bilder/ikke_blur"
 #print(bm.diferanse_varianse_overst_nederst(blurTo))
+obj = "Prosjekt/Resourses/Intern_database/bild_id_9.pkl"
 
+with open("Prosjekt/Resourses/Intern_database/bild_id_9.pkl", 'rb') as file:
+    # Last inn objektet fra .pkl-filen
+    bil = pickle.load(file)
 
+print(bil.motion_blur)
 
-bgr_image = cv2.imread("Prosjekt/Resourses/CH_bilder/ikke_blur/D20231115_T151241_1.png")
+bgr_image = cv2.imread(bilde)
 
 image_height, image_width = bgr_image.shape[:2]
 
 imgae_size = image_height*image_width
 
 # Klipp bildet fra sentrum av x-aksen
-overst = bm.crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
+#overst_Venstre = bm.crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
+nederst_Hoyre = bm.crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.500),int(image_width*0.3),int(image_height/2))
+#cv2.imshow('bilde',overst)
+cv2.imshow('bilde',bgr_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
+dråper = bm.calculate_variance_histogram_folder(nederst_Hoyre)
+print(dråper)
 
 #print(f'retur= {bm.diferanse_varianse_overst_nederst(dekk)}')
 #bm.flytt_bilder(CH_Mappe_Path,cropped_Mappe_Path)
 #bm.multi_histogram_folder(CH_cropped_Mappe_Path)
-bm.calculate_variance_histogram_folder(ikke_blur)
+#bm.Confusion_matrix(ikke_blur)
 #bm.vis_blokk_varians(perf,11)
 
 #bm.se_kant_dekk(cv2.imread(blur))

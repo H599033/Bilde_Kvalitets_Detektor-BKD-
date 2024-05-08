@@ -139,8 +139,7 @@ class Motion_Blur_Detektor():
 
     def is_Wet(self,image_path):
         image = cv2.imread(image_path)
-        dråper = self.detect_water_droplets(image)
-        
+        dråper = self.detect_water_droplets(image)        
         if(dråper>40):
             return True
         return False

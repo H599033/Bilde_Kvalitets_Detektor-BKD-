@@ -14,7 +14,9 @@ class Lys_Detektor():
     def sjekk_lys_Hele_Bildet(image_path):
         # Last inn bildet
         image = cv2.imread(image_path)
-
+        if image is None:
+            print("Kunne ikke lese inn bildet. Sørg for at filbanen er riktig.")
+            return
         # Hent lysverdien fra hele bildet
         brightness_values = image
 
