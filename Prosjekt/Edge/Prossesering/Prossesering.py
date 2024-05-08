@@ -44,18 +44,18 @@ def lag_alle_bil_objekt():
             dato_Og_tid(bil_objekt, _bilde_mappe_sti)
             sjekk_kvalitet(bil_objekt)            
                       
-            print("bil nummer :" + str(_antall_Biler )+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur)  + ". V = "+ str(bil_objekt.vaatt_dekk))            
+            #print("bil nummer :" + str(_antall_Biler )+ ". Lys = " + str(bil_objekt.lav_belysning) + ". Mb = "+ str(bil_objekt.motion_blur)  + ". V = "+ str(bil_objekt.vaatt_dekk))            
             bil_objekt.lagre_til_fil(ny_objekt_fil(_Intern_database_sti, _antall_Biler))
 
 def dato_Og_tid(bil, _bilde_mappe_sti):
     nå = datetime.now()
-    parts = _bilde_mappe_sti.split('\\')
+    parts = _bilde_mappe_sti.split(os.path.sep)
 
     # Get the part containing the date and time information
     date_time_part = parts[-1] 
 
     # Split the date_time_part using underscore as a delimiter to separate date and time
-    date, time = date_time_part[1:].split('_')  
+    date, time = date_time_part[1:].split('_')
     time = time[1:]
 
     formatted_date = datetime.strptime(date, "%Y%m%d").strftime("%Y-%m-%d")
@@ -64,15 +64,16 @@ def dato_Og_tid(bil, _bilde_mappe_sti):
     bil.tid = formatted_time
     
 def sjekk_kvalitet(bil):
-    if(_LD.Lysnivå_for_lav(bil.hent_bilde_en())):
+    lysverdi = _LD.Lavt_Lysnivå_allesider_dekk(bil.hent_bilde_en())
+    if(lysverdi<55):
         #legg til sjekk for urent kamera her
         bil.lav_belysning = True
-    if(_MBD.is_blur(bil.hent_bilde_en())):
+    if(_MBD.is_blur(bil.hent_bilde_en(),lysverdi)):
            bil.motion_blur = True
            #kjør debluring           
            #TEMP legger bare til ett bilde i listen.
            bil.redigerte_bilder.append(bil.hent_bilde_en())
-    if(_vann.is_Wet(bil.hent_bilde_en())):
+    if(_vann.is_Wet(bil.hent_bilde_en(),lysverdi)):
         bil.vaatt_dekk = True
 
 def lag_bil_objekt (sted, _mappe_sti):
@@ -106,37 +107,3 @@ def finn_Bilde(image_path):
     # Gjør bilde til en torch tensor
     return F.to_tensor(image).unsqueeze(0)
     
-
-
-#-------------------------------TEST-----------------------------
-
-# Før testing av denne koden. kjør Video_slicer.py først. 
-# Kjør den til du har minst ett bilde i "Resourses.Output_source". Helst til du har flere mapper i "Output_source"
-# avbry kjøring med (control c) i terminalen
-# Ved vellyket kjøring burde ett bilde bli vist frem. og mappen "Resourses.Intern_database" -
-# burde nå inne holde like mange filer som det er mapper inne i "Output_source"
-
-#lag_alle_bil_objekt()
-
-#Video_Slicer.start()
-
-#lag_alle_bil_objekt()
-"""
-fil = os.path.join("Prosjekt", "Resourses", "Intern_database","bild_id_2.pkl")
-
-def laste_fra_fil(filnavn):
-        with open(filnavn, 'rb') as fil:
-            return pickle.load(fil)     
-
-bil = laste_fra_fil(fil)
-print(bil.sted)
-print(bil.dato)
-print(bil.tid)
-print(bil.orginal_bilder[0])
-print(bil.lav_belysning)
-
-# Få absolutt filsti til bildet
-
-bildebane = (bil.orginal_bilder[0]) #viser første bilde i listen
-print(bildebane)
-"""

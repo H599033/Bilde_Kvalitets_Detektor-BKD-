@@ -8,9 +8,6 @@ class Detektor_service():
     def crop_image_from_center(self,image, crop_width, crop_height, offset_x=0, offset_y=0):
         
         # Hent dimensjonene til bildet
-        print('----------------------------SERVICE--------------------------------')
-        
-        print()
         image_height, image_width = image.shape[:2]
 
         # Beregn midtpunktet av bildet

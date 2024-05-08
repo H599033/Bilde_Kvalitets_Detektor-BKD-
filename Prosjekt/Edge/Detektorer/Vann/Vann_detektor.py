@@ -36,17 +36,16 @@ class Vann_detektor():
         return antall
     
     
-    def is_Wet(self,image_path,antall=False):
+    def is_Wet(self,image_path,lysverdi,antall=False):
         
         image = cv2.imread(image_path)
         
-        lys = _LD.Lavt_Lysnivå_allesider_dekk(image_path)
         dråper = self.detect_water_droplets(image)
         if antall:
             return dråper
         if(dråper>30):
             #print(f'{image_path} , antall dråper = {dråper}  lys , {lys}')
             return True
-        if(lys<50 and dråper>23):            
+        if(lysverdi<50 and dråper>23):            
             return True
         return False

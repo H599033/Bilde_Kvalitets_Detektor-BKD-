@@ -11,9 +11,6 @@ class Motion_Blur_Detektor():
     def crop_image_from_center(self,image, crop_width, crop_height, offset_x=0, offset_y=0):
         
         # Hent dimensjonene til bildet
-        print('-----------------------------croppped mb-------------------------------')
-        
-        print()
         image_height, image_width = image.shape[:2]
 
         # Beregn midtpunktet av bildet
@@ -32,7 +29,7 @@ class Motion_Blur_Detektor():
         return cropped_image
 
     _varianse_treshold = 0.05
-    def diferanse_varianse_overst_nederst(self, image):
+    def diferanse_varianse_overst_nederst(self, image,snitt=False):
         """
         This function convolves a grayscale image with
         a Laplacian kernel and calculates its variance.
@@ -58,22 +55,35 @@ class Motion_Blur_Detektor():
         variance_nedre = tensor_image_nedre.var()
 
         variance_hoyre = tensor_image_hoyre.var()
+        
  
-        return abs(variance_over/variance_nedre)    
+        if snitt:
+            return variance_over+variance_nedre+variance_hoyre / 3
+        return abs(variance_over/variance_nedre)  
 
-    def is_blur(self,image_path):
+    def is_blur(self,image_path,Lysverdi,verdi = False):
         """
         This function convolves a grayscale image with
         a Laplacian kernel and calculates its variance.
         """
         image = cv2.imread(image_path)
-        
-        varianse = self.diferanse_varianse_overst_nederst(image)
 
+        snitt = self.diferanse_varianse_overst_nederst(image,True)
+        varianse = self.diferanse_varianse_overst_nederst(image)
+        
+        if(Lysverdi>60 and snitt<0.015):
+            return True
+        if(Lysverdi<60 and snitt<0.02):        
+            return True
         #print(filename + " var: " + str(lysnivå))
-        lys = _LD.Lavt_Lysnivå_allesider_dekk(image_path)
-        if(lys>60 and varianse>3.5):
+        if(Lysverdi>70 and varianse>3.5):
+            #print(f'høy lys verdi = {image_path}')
             return True
-        if(lys<60 and varianse > 1.5):
+        if(Lysverdi<70 and varianse > 1.5):
+            #print(f'Lav lys verdi = {image_path}')
             return True
-        return False
+        
+        
+        if(verdi):
+            return varianse
+        return False  

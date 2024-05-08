@@ -1,8 +1,10 @@
 import sys
 sys.path.append('Prosjekt')
-import Prossesering
+from Edge.Prossesering import Prossesering
 from Edge.Passering import Video_Slicer
+from Web.app import Nettside 
 
-
+web = Nettside()
 #Video_Slicer.start()
 Prossesering.lag_alle_bil_objekt()
+web.start()

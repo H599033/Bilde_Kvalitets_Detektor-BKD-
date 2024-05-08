@@ -16,7 +16,7 @@ class Bil:
         self.vaatt_dekk = vaatt_dekk
 
     def lagre_til_fil(self, filnavn):
-        print("Lagrer fil " + filnavn)
+        #print("Lagrer fil " + filnavn)
         with open(filnavn, 'wb') as fil:
             pickle.dump(self, fil)
 
