@@ -44,7 +44,7 @@ def lag_alle_bil_objekt(Video_slicer=False):
             _antall_Biler+=1 
             _bilde_mappe_sti = os.path.join(path, element)
             bil_objekt = lag_bil_objekt("Bergen",_bilde_mappe_sti)
-            if (Video_Slicer):
+            if (Video_slicer):
                 nå = datetime.now()
                 bil_objekt.dato = nå.strftime("%Y-%m-%d")
                 bil_objekt.tid = nå.strftime("%H:%M:%S")

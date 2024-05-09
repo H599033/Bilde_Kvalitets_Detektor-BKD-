@@ -27,10 +27,11 @@ $(document).ready(function () {
             if (index !== 0) {
                 $row = $(this);
 
-                var motionBlur = $row.find("td:eq(4)").text().indexOf("Motion blur: ✔") > -1;
-                var lavBelysning = $row.find("td:eq(4)").text().indexOf("Lav belysning: ✔") > -1;
-                var vaatDekk = $row.find("td:eq(4)").text().indexOf("Vått dekk: ✔") > -1;
+                var motionBlur = $row.find("td:eq(4)").text().indexOf("Motion blur") > -1;
+                var lavBelysning = $row.find("td:eq(4)").text().indexOf("Lav belysning") > -1;
+                var vaatDekk = $row.find("td:eq(4)").text().indexOf("Vått dekk") > -1;
                 var godkjent = $row.find("td:eq(4)").text().indexOf("Kvalitet: ✔") > -1;
+                var ikkegodkjent = $row.find("td:eq(4)").text().indexOf("Kvalitet: ✖") > -1;
                 var rowDate = new Date($row.find("td:eq(3)").text());
                 var rowTime = $row.find("td:eq(2)").text();
                 var rowId = $row.find("td:eq(0)").text().toLowerCase();
@@ -39,6 +40,7 @@ $(document).ready(function () {
                 var kvalitetMatch =     
                     (kvalitetValue === "select..." ||
                     (kvalitetValue === "godkjent" && godkjent)||  
+                    (kvalitetValue === "ikke_godkjent" && ikkegodkjent)||
                     (kvalitetValue === "motion_blur" && motionBlur) ||
                     (kvalitetValue === "lav_belysning" && lavBelysning) ||
                     (kvalitetValue === "vaatt_dekk" && vaatDekk));
@@ -84,20 +86,20 @@ $(document).ready(function () {
             var qualityIndicator = "";
 
             if(Boolean(value.motion_blur) == true || Boolean(value.lav_belysning) == true || Boolean(value.vaatt_dekk) == true){
-                qualityIndicator += "Kvalitet: " + "<span style='color:red;'>✖</span>" + "<br>";
+                qualityIndicator += "<b>Kvalitet: </b>" + "<span style='color:red;'>✖</span>" + "<br>" + "<br>";
             }
 
             if (Boolean(value.motion_blur) == true) {
-                qualityIndicator += "Motion blur: " + "<span style='color:green;'>✔</span>" + "<br>";
+                qualityIndicator += "-Motion blur " + "<br>";
             }
             if (Boolean(value.lav_belysning) == true) {
-                qualityIndicator += "Lav belysning: " + "<span style='color:green;'>✔</span>" + "<br>";
+                qualityIndicator += "-Lav belysning " + "<br>";
             }
             if (Boolean(value.vaatt_dekk) == true) {
-                qualityIndicator += "Vått dekk: " + "<span style='color:green;'>✔</span>" + "<br>";
+                qualityIndicator += "-Vått dekk " + "<br>";
             }
             if (qualityIndicator === "") {
-                qualityIndicator = "Kvalitet: " + "<span style='color:green;'>✔</span>";
+                qualityIndicator = "<b>Kvalitet: </b>" + "<span style='color:green;'>✔</span>";
             }
             row.append("<td>" + qualityIndicator + "</td>");
     
