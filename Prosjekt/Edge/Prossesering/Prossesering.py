@@ -31,8 +31,13 @@ _Intern_database_bilder_sti = os.path.join("Prosjekt", "Resourses", "Intern_data
 _antall_Biler = 0
 
 def lag_alle_bil_objekt(Video_slicer=False):
+    """ går gjennom mappen bildene er lagret og lager objekter og gir dem verdier basert på dem. 
+
+    Args:
+        Video_slicer (bool, optional): True hvis bruker ønsker å bruke video_Sliceren på en video i stede for ferdige bilder i mappe. Defaults to False.
+    """
     #Her velges hvilken mappe objektene skal lages av.
-    print('Prossesering start')
+   
     if(Video_slicer):
         path=_output_mappe_sti
     else:
@@ -57,6 +62,12 @@ def lag_alle_bil_objekt(Video_slicer=False):
     print('Prossesering slutt')
 
 def dato_Og_tid(bil, _bilde_mappe_sti):
+    """ Lager en tid og en dato basert på navnet på en mappe.
+
+    Args:
+        bil (objekt): bilobjektet som skal ha tid og dato verdien endret. 
+        _bilde_mappe_sti (str): navnet på mappen
+    """
     nå = datetime.now()
     parts = _bilde_mappe_sti.split(os.path.sep)
 
@@ -73,6 +84,11 @@ def dato_Og_tid(bil, _bilde_mappe_sti):
     bil.tid = formatted_time
     
 def sjekk_kvalitet(bil):
+    """ Sjekker resultatene for lys, motion blur og vann detektorene.
+
+    Args:
+        bil (objekt): bil objektet som skal ha bool verdiene sine gitt en verdi
+    """
     lysverdi = _LD.Lavt_Lysnivå_allesider_dekk(bil.hent_bilde_en())
     if(lysverdi<55):
         #legg til sjekk for urent kamera her
@@ -86,25 +102,64 @@ def sjekk_kvalitet(bil):
         bil.vaatt_dekk = True
 
 def lag_bil_objekt (sted, _mappe_sti):
+    """ Lager bil objekte basert på mappe stien
+
+    Args:
+        sted (str): Stede bilde ble tatt
+        _mappe_sti (str): stien til mappen som bil objketet skal baseres på.
+
+    Returns:
+        bil: bil objektet som er laget
+    """
     bil = Bil.Bil(sted, lag_bilde_sti_liste(_mappe_sti))
     bil.ID = _antall_Biler
     return bil
 
 #Kan ikke lagre selve bildene i lag med objektet. så lager en liste av stien til bildene i stede.
 def lag_bilde_sti_liste(mappe_sti):
+    """ Lager en liste med stien til der bildene til bilobjektet er lagret.
+
+    Args:
+        mappe_sti (str): stien til mappen der bildeene er lagret.
+
+    Returns:
+        List[str]: listen med stiene til bildene
+    """
     bildeliste = os.listdir(mappe_sti)
     bildeliste = [os.path.join(mappe_sti, fil) for fil in bildeliste if fil.lower().endswith(('.jpg', '.jpeg', '.png'))]
     return bildeliste
 
 def ny_objekt_fil(inter_database_sti,bil_ID ):
+    """ lager en pkl fil for bilobjektet og plasserer den i en mappe
+
+    Args:
+        inter_database_sti (str): stien til mappen filen skal lagres i
+        bil_ID (int): iden til bil objektet som skal lagres i en pkl fil
+
+    Returns:
+        str: pathen til den nyre filen
+    """
     filnavn = f"bild_id_{bil_ID}.pkl"
     filbane = os.path.join(inter_database_sti, filnavn)
     return filbane
 
 def mappe_ikke_tom(mappe_sti):
+    """sjekker om en mappe er tom
+
+    Args:
+        mappe_sti (str): pathen til mappen
+
+    Returns:
+        bool: om mappen er tom eller ikke
+    """
     return any(os.listdir(mappe_sti))
 
 def slett_mappe(mappe_sti):
+    """ for å slette en mappe
+
+    Args:
+        mappe_sti (str): stien til mappen som skal slettes
+    """
     if os.path.exists(mappe_sti):
       shutil.rmtree(mappe_sti)
     else:
@@ -112,6 +167,14 @@ def slett_mappe(mappe_sti):
 
 # tar inn image_path og returnerer en tensor av bildet. 
 def finn_Bilde(image_path):
+    """ tar inn en bilde path og henter frem bilde
+
+    Args:
+        image_path (str): pathen til bildet
+
+    Returns:
+        tenso: tensoren til bildet
+    """
     image = cv2.imread(image_path)
     # Gjør bilde til en torch tensor
     return F.to_tensor(image).unsqueeze(0)

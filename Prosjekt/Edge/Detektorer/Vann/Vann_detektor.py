@@ -4,7 +4,7 @@ from Detektorer.Detektor_service.Detektor_service import Detektor_service
 from Detektorer.Lys.Lys_Detektor import Lys_Detektor
 
 _LD = Lys_Detektor()
-_DS = Detektor_service
+_DS = Detektor_service()
 
 
 class Vann_detektor():

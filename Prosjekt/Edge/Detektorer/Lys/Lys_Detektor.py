@@ -6,14 +6,21 @@ _DS = Detektor_service()
 
 class Lys_Detektor():
 
-    _LysNivå_Grense_Fult_bilde = 45
+    _LysNivå_Grense_Fult_bilde = 55
     # Last modellen
     model = fasterrcnn_resnet50_fpn(weights='COCO_V1')
     model.eval()
 
 
     def sjekk_lys_Hele_Bildet(image_path):
-        # Last inn bildet
+        """_summary_
+
+        Args:
+            image_path (String): Hvor bilder er plassert.
+
+        Returns:
+            int: Snitte av rbg verdiene for hele  bidet.
+        """
         image = cv2.imread(image_path)
         image_height, image_width = image.shape[:2]
         brightness_values = image
@@ -23,9 +30,12 @@ class Lys_Detektor():
         return brightness
 
     def Lavt_Lysnivå_allesider_dekk(self,image_path):
-        """
-        This function convolves a grayscale image with
-        a Laplacian kernel and calculates its variance.
+        """Sjekker lysnivået av bildene som blir delt opp. 
+            kan enten returnere snittet av disse verdiene eller 
+            returnerer lysnivået til det bildet som har høyest lysnivå.
+        Returns:
+            int: kan enten returnere snittet av disse verdiene eller 
+            returnerer lysnivået til det bildet som har høyest lysnivå.
         """
         bgr_image = cv2.imread(image_path)
         
@@ -48,4 +58,9 @@ class Lys_Detektor():
         
     
     def Lysnivå_for_lav(self,image_path):
+        """ metode for sjekk om lysnivå er godkjent eller ikke.
+
+        Returns:
+            bool: sjekker om resultat til Lavt_Lysnivå_allesider_dekk er over eller under terskel.
+        """
         return self.Lavt_Lysnivå_allesider_dekk(image_path)< self._LysNivå_Grense_Fult_bilde

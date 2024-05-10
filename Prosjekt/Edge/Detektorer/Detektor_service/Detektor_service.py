@@ -4,9 +4,21 @@ from torchvision.transforms import functional as F
 
 
 class Detektor_service():
-   
+    
+  
     def crop_image_from_center(self,image, crop_width, crop_height, offset_x=0, offset_y=0):
-        
+        """tar inn ett bilde og deler det opp basert på inn verdiene
+
+        Args:
+            image (png): Selve bilde som skal bli delt opp
+            crop_width (double): hvor brett bildet skal være
+            crop_height (double): hvor høye bilde skal være
+            offset_x (int, optional): hvor langt til vertikalt fra senter av orginal bilde det nye skal lages Defaults to 0.
+            offset_y (int, optional): hvor langt til hirisontalt fra senter av orginal bilde det nye skal lages . Defaults to 0.
+
+        Returns:
+            png: det nye bildet som er kuttet opp fra det orginale. 
+        """
         # Hent dimensjonene til bildet
         image_height, image_width = image.shape[:2]
 

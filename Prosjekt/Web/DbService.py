@@ -9,6 +9,11 @@ project_root = "Prosjekt"
 _intern_database = os.path.join(project_root, "Resourses", "Intern_database")
 
 def hent_alle_biler():
+    """ henter alle bilene som er lagret i bilde path listen
+
+    Returns:
+        List[str]: listen for bilde pathene
+    """
     bil_liste = []
     innhold = os.listdir(_intern_database)
     for element in innhold:
@@ -19,6 +24,13 @@ def hent_alle_biler():
     return bil_liste
 
 def laste_fra_fil2(filnavn):
+    """
+    Henter objektet fra en pkl fil
+    Args: filnavn (str): filen som objektet skal hentes fra
+    Returns:
+        objektet som er i filen.
+    
+    """
     if os.path.exists(filnavn):
         with open(filnavn, 'rb') as fil:
             return pickle.load(fil)

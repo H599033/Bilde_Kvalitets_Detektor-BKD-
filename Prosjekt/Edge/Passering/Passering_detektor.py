@@ -18,6 +18,14 @@ _tomm_ny_mappe = True
 _threshold = 0.9
 #lager ny mappe for hver bil
 def lag_ny_mappe (output_path):
+    """ Lager en ny mappe for nye bil objekt. hvis det ikke allerede eksistere en mappe me det ønskede navnet
+
+    Args:
+        output_path (str): pathen til mappen de nye mappene skal plasseres i.
+
+    Returns:
+        str: stien til den nye mappen
+    """
     global _bilnr
     _bilnr += 1
     ny_mappe_navn = "Bilnr_" +str(_bilnr)

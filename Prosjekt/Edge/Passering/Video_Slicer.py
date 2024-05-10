@@ -6,6 +6,8 @@ from Passering import Passering_detektor
 
 
 def start():
+    """tar inn en video og deler den opp i bilder.
+    """
     print("start")
     # Endre denne stien til videoen din
     project_root = "Prosjekt"

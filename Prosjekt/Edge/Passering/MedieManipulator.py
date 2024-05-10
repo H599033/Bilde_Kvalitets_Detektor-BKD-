@@ -18,6 +18,12 @@ class CH_Bilder_Manipulator:
         pass
     # For å ta alle bildene fra counting_hero inn på en mappe. 
     def flytt_bilder(self, kilde_mappe, mål_mappe):
+        """ Tar innholdet i en kilde_mappe og plasserer det i mål_mappe
+
+        Args:
+            kilde_mappe (String): Pathen til mappen som skal ha innholdet flyttet
+            mål_mappe (String): Pathen til mappen som innholdet skal flyttes til.
+        """
         # Sjekker om målmappe eksisterer, hvis ikke, opprett den
         if not os.path.exists(mål_mappe):
             os.makedirs(mål_mappe)
@@ -39,6 +45,15 @@ class CH_Bilder_Manipulator:
     # legger til motion blur til ett bilde.
     # Konverter bildet til PyTorch tensor.
     def add_motion_blur(self,image, kernel):
+        """Legger til blur på ett bildet.
+
+        Args:
+            image (png): Bildet som skal endres på.
+            kernel (int): hvor mye blur som skal bli lagt til
+
+        Returns:
+            png: det nye bildet som har blur lagt til.
+        """
         img = cv2.imread(image) 
   
         # Specify the kernel size. 
@@ -67,6 +82,12 @@ class CH_Bilder_Manipulator:
         return vertical_mb
      
     def lag_Bilde_Mb (self,bilde_kilde,bilde_mål):
+        """Tar inn ett bilde legger til blur og plasserer det i ønsket mappe.
+
+        Args:
+            bilde_kilde (String): Pathen til bildet som skal korigeres
+            bilde_m (String): Pathen til mappen som bildet skal bli laft til i        
+        """
         #MB_faktor = round(random.uniform(5, 15))
         MB_faktor = 7
         originalt_filnavn = os.path.basename(bilde_kilde)
@@ -77,8 +98,15 @@ class CH_Bilder_Manipulator:
         mb_bilde_path = os.path.join(bilde_mål, nytt_filnavn)
 
         cv2.imwrite(mb_bilde_path, bilde_mb)
+        
     def lag_alle_Mb_bilder(self, bilde_kilde, bilde_mål):
-    
+        """Tar en mappe med bilder og legger til blur på alle bildene, og plasserer de nye bildene i en ny mappe
+
+        Args:
+            bilde_kilde (String): Pathen til mappen alle bildene som skal endres på er.
+            bilde_m (_type_): Pathen til mappen de korigerte bildene skal plasseres
+        
+        """
     # Sjekker om målmappe eksisterer, hvis ikke, opprett den
         if not os.path.exists(bilde_mål):
             os.makedirs(bilde_mål)
@@ -95,9 +123,13 @@ class CH_Bilder_Manipulator:
     # Brukes for å utregne hvilken treshold som skal brukes for Mb detektoren
     
     def bilde_variance(self, image):
-        """
-        This function convolves a grayscale image with
-        a Laplacian kernel and calculates its variance.
+        """Sjekker variasjonene i pikslene på ett bilde.
+
+        Args:
+            image (png): bildet som skal analyseres
+
+        Returns:
+            double: variasjonene mellom pikslene i bildet.
         """
         bgr_image = image
         
@@ -114,9 +146,15 @@ class CH_Bilder_Manipulator:
         return variance
         
     def diferanse_varianse_overst_nederst(self, image ,snitt=False):
-        """
-        This function convolves a grayscale image with
-        a Laplacian kernel and calculates its variance.
+        """sjekker forskjellen mellom variasjonen på ett oppsplittet bildet
+
+        Args:
+            image (png): bildet som skal deles opp og ha de forskjellige delene analysert
+            snitt (bool, optional): om koden skal returnere snittet til de oppdelte bildene eller forskjellen. Defaults to False.
+            
+         Returns:
+            double: snitt eller forskjellen i variasjonen mellom de oppdelte bildene.
+
         """
         #bgr_image = image
 
@@ -173,9 +211,11 @@ class CH_Bilder_Manipulator:
         return abs(variance_over/variance_nedre)
     
     def Lavt_Lysnivå_allesider_dekk_fungerenede(self,image_path):
-        """
-        This function convolves a grayscale image with
-        a Laplacian kernel and calculates its variance.
+        """ Tar ett bilde deler det opp og sjekker den biten av dekke med høyest lysnivå
+        Args:
+            image_path (String): Pathen til bilde som skal analyseres
+        Returns:
+            double: lysnivået på den lyseste delen av dekket.
         """
         bgr_image = cv2.imread(image_path)
         
@@ -198,7 +238,14 @@ class CH_Bilder_Manipulator:
         return hoyre.mean()
     #return (ov+nv+hv)/3
     def measure_noise_level(self,image):
-    # Les inn bildet
+        """Sjekker støynivået til ett bildet
+
+        Args:
+            image (png): bildet som skal analyseres
+
+        Returns:
+            double: nivået at støy
+        """
 
         # Konverter til gråskala
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -212,6 +259,12 @@ class CH_Bilder_Manipulator:
         return mean_abs_diff
     
     def copy_image_to_folder(self,original_image_path, destination_folder):
+        """lager en kopi av ett bildet og plasserer det i en ny mappe
+
+        Args:
+            original_image_path (String): Orginal pathen til bildet
+            destination_folder (String): Pathen til mappen kopi bildet skal plasseres i
+        """
     # Sjekk om destinasjonsmappen eksisterer, hvis ikke, opprett den
         if not os.path.exists(destination_folder):
             os.makedirs(destination_folder)
@@ -225,7 +278,16 @@ class CH_Bilder_Manipulator:
         # Kopier originalbildet til destinasjonsmappen
         shutil.copyfile(original_image_path, destination_path)
 
+    
     def multi_histogram_folder(self, folder_path):
+        """ Lager ett histogram med flere lister som får hver sin farge i histogrammet        
+            
+            inneholder en del utkommenterte forsøk. beholdt i tillfele de kan ble brukt på ny.
+            
+            Args: 
+            folder_path (str): Stien til mappen med bildene som skal analyseres og ha verdiene lagt til i histogrammet
+        """
+        
         list_500us = []
         list_1000us = []
         list_dirty_wet = []
@@ -327,6 +389,14 @@ class CH_Bilder_Manipulator:
         plt.show()
         
     def calculate_variance_histogram_folder(self, folder_path):
+        """ Lager ett histogram for variasjonene til bildene.  
+            
+            inneholder en del utkommenterte forsøk. beholdt i tillfele de kan ble brukt på ny.
+            
+            Args: 
+            folder_path (str): Stien til mappen med bildene som skal analyseres og ha verdiene lagt til i histogrammet
+        """
+        
         variance_list = []
         list =[]
         lysover= []
@@ -404,6 +474,17 @@ class CH_Bilder_Manipulator:
         plt.show()
     
     def detect_water_droplets(self,image, threshold_area=100,Delt_bilde = False):
+        """Teller antall vanndråper som er i ett  bildet.
+
+        Args:
+            image (png): bilde som skal analyserers
+            threshold_area (int, optional): område som skall sjekkes av gangen. Defaults to 100.
+            Delt_bilde (bool, optional): Hvis ønsker å sammen ligen mellom oppdelete deler av bildeet. Defaults to False.
+
+        Returns:
+            int: antall dråper som er telt.
+        """
+        
     # Les inn bildet
         # Konverter til gråskala
         
@@ -449,9 +530,13 @@ class CH_Bilder_Manipulator:
         return antall
     
     def Lavt_Lysnivå_allesider_dekk(self, image_path,mb=False):
-        """
-        This function convolves a grayscale image with
-        a Laplacian kernel and calculates its variance.
+        """Sjekker lysnivået på forskjellige deler av ett dekk.
+        
+        Args: 
+        image_path (str): Stien til bildet som skal sjekkes.
+        mb (bool): Om True, blir snitte av de forskjellige bitene av dekket returnert.
+        Returns:
+            double: enten snitt lysnivå til tresider av dekket eller lysnivået til den biten av dekket med høyest lysnivå.
         """
         bgr_image = cv2.imread(image_path)
         
@@ -477,6 +562,12 @@ class CH_Bilder_Manipulator:
         return hoyre.mean()     
     
     def calculate_Lysnivå_histogram_folder(self, folder_path):
+        """ Lager ett histogram basert på lysnivået til bildene i en mappe.
+        Args:
+        folder_path (str): Stien til mappen som skal ha bildene sine analysert.
+        """
+
+
         variance_list = []
         ant=0
         # Iterate through images in the folder
@@ -504,6 +595,14 @@ class CH_Bilder_Manipulator:
         plt.show()
     
     def calculate_variance_histogram(self, image):
+        """ lager ett histogram basert på variasjonene i pikslene på ett bilde.
+
+        Args:
+            image (png): bilde som skal analyseres
+
+        Returns:
+            double: variasjonen til bildet.
+        """
         # Calculate variance using your function for a single image
         variance = self.sjekk_lys_Hele_Bildet(self.finn_bilde(image))
 
@@ -517,7 +616,14 @@ class CH_Bilder_Manipulator:
 
         return variance
     
-    def sjekk_lys_Hele_Bildet(self,image_path):        
+    def sjekk_lys_Hele_Bildet(self,image_path):   
+        """
+        sjekker lysninvået på et bildet
+        
+        Args: image_path : stien til bilde som skal analyseres
+        
+        Returns: verdien til lysnivået.
+        """     
         # Last inn bildet        
         # Hent lysverdien fra hele bildet
         image =  cv2.imread(image_path)
@@ -529,6 +635,15 @@ class CH_Bilder_Manipulator:
         return brightness
     
     def calculate_lysnivaa_histogram(self, image):
+        """lager ett histogram av lysnivået til ett bilde
+
+        Args:
+            image (png): bildet som skal analyseres
+
+        Returns:
+            double: lysnivået til bildet.
+        """
+        
         # Calculate variance using your function for a single image
         lysnivaa = self.sjekk_lys_Hele_Bildet(image)
         
@@ -542,22 +657,19 @@ class CH_Bilder_Manipulator:
 
         return lysnivaa
 
-    def finnbilde(self, path):
-        return  cv2.imread(path)
-    
-    def finn_bilde(self, path):
-        # Implement your image loading logic here based on your specific needs
-        # Example: You might want to use PIL, OpenCV, or torchvision
-        # For simplicity, this example assumes torchvision is used.
-        from torchvision import transforms
-        from PIL import Image
-
-        img = Image.open(path).convert('L')  # Convert to grayscale if not already
-        transform = transforms.ToTensor()
-        img = transform(img)
-        return img
-
     def crop_image_from_center(self,image, crop_width, crop_height, offset_x=0, offset_y=0):
+        """tar inn ett bilde og deler det opp basert på inn verdiene
+
+        Args:
+            image (png): Selve bilde som skal bli delt opp
+            crop_width (double): hvor brett bildet skal være
+            crop_height (double): hvor høye bilde skal være
+            offset_x (int, optional): hvor langt til vertikalt fra senter av orginal bilde det nye skal lages Defaults to 0.
+            offset_y (int, optional): hvor langt til hirisontalt fra senter av orginal bilde det nye skal lages . Defaults to 0.
+
+        Returns:
+            png: det nye bildet som er kuttet opp fra det orginale. 
+        """
         # Hent dimensjonene til bildet
         image_height, image_width = image.shape[:2]
 
@@ -577,6 +689,15 @@ class CH_Bilder_Manipulator:
         return cropped_image
 
     def resize_image_to_density(self,image, target_density):
+        """ tar ett bilde og setter piksel tetheten til en verdi
+
+        Args:
+            image (png): bildet som skal endres på
+            target_density (int): tettheten bildet skal ha
+
+        Returns:
+            png: det nye bildet som har endret piksel tetthet.
+        """
         # Hent dimensjonene til det opprinnelige bildet
         height, width = image.shape[:2]
 
@@ -592,6 +713,14 @@ class CH_Bilder_Manipulator:
         return resized_image
 
     def se_kant_dekk(self,image):
+        """ prøver å finne kanter som finnes i ett bildet
+
+        Args:
+            image (png): bildet som skal sjekkes
+            
+        Returns:
+            bilde som har kantene fremhevet.
+        """
         #image = cv2.imread(image)
 
     # Konverter til gråskala
@@ -614,6 +743,14 @@ class CH_Bilder_Manipulator:
         return kant_bilde
     
     def blokkfilter_med_variasjon(self,image_path, block_size):
+        """ tar variasjonen til ett område i ett bildet og tar snitt til å lage ett nytt bildet. 
+
+        Args:
+            image_path (str): pathen til bildet
+            block_size (int): hvor stor blok som skal endres på av gangen
+        Retursn:
+            det nye bildet.
+        """
         # Last inn bildet
         image = cv2.imread(image_path)
 
@@ -638,6 +775,12 @@ class CH_Bilder_Manipulator:
         return block_variances
 
     def vis_blokk_varians(self,image_path, block_size):
+        """viser bildet laget av blockfilter funksjonen
+
+        Args:
+            image_path (str): pathen til orginale bildet
+            block_size (int): hvor stor område blokfiltere skal ta av gangen
+        """
         # Generer blokkvarianser
         block_variances = self.blokkfilter_med_variasjon(image_path, block_size)
 
@@ -653,6 +796,12 @@ class CH_Bilder_Manipulator:
         cv2.destroyAllWindows()
 
     def houg_circle_transform(self, image_path):
+        """ 
+            Finner sirkler i ett bidlet
+
+        Args:
+            image_path (str): pathen til bildet som skal bli analysert for sirkeler
+        """
         
         image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
         blur = cv2.GaussianBlur(image, (9, 9), 2)
@@ -677,6 +826,14 @@ class CH_Bilder_Manipulator:
             print("No circles found.")
 
     def crop_image_based_on_circles(self,image_path):
+        """ deller opp bildet basert på sirklene laget av houg_circle_transform
+
+        Args:
+            image_path (str): pathen til bildet 
+
+        Returns:
+            png: bildet som har blitt croppet. 
+        """
         # Les inn et bilde av et bildekk
         image = cv2.imread(image_path, cv2.IMREAD_COLOR)
 
@@ -727,6 +884,14 @@ class CH_Bilder_Manipulator:
             return None
 
     def crop_image_based_on_circles2(self,image_path):
+        """deller opp bildet basert på sirklene laget av houg_circle_transform
+
+        Args:
+            image_path (str): pathen til bildet 
+
+        Returns:
+            png: bildet som har blitt croppet. 
+        """
         # Les inn et bilde av et bildekk
         image = cv2.imread(image_path)
 
@@ -798,6 +963,11 @@ class CH_Bilder_Manipulator:
             return None
 
     def sirkler_bilde (self, image_path):
+        """ finner sirkler på bildet markerer dem i rød
+
+        Args:
+            image_path (str): pathen til bildet
+        """
         dekk = cv2.imread(image_path)
 
         # Konverter til gråtone
@@ -823,6 +993,14 @@ class CH_Bilder_Manipulator:
         cv2.destroyAllWindows()
     
     def tetthet (self, image_path):
+        """finner tettheten til bildet
+
+        Args:
+            image_path (str): pathen til bildet som skal sjekkes
+
+        Returns:
+            int: pikseltettheten til bildet
+        """
         image = cv2.imread(image_path)
 
         # Hent dimensjonene til bildet
@@ -834,10 +1012,17 @@ class CH_Bilder_Manipulator:
         return antall_piksler
      
     def is_blur(self,image_path,Lysverdi,verdi = False):
+        """Definerer om bildet som blir gitt har motion blur eller ikke. 
+        Args:
+            image_path (String): Pathen til bildet som skal analyseres
+            Lysverdi (int): Hva lysnivået til bildet er
+            verdi (bool, optional): Hvis verdi blir satt til True returnerer den verdien til resultatet i stede for en bool
+
+        Returns:
+            double/Bool: Hvis verdi = True returnerer den verdien av resultatet. 
+                         Hvis false returnerer den bool verdien for om bilde har motion blur eller ikke. 
         """
-        This function convolves a grayscale image with
-        a Laplacian kernel and calculates its variance.
-        """
+       
         image = cv2.imread(image_path)
 
         snitt = self.diferanse_varianse_overst_nederst(image,True)
@@ -858,6 +1043,15 @@ class CH_Bilder_Manipulator:
         return False    
     
     def mask_im_ov (self,gray_image):
+        """ gjør alt annet enn det øverst til høre delen av ett bilde sort.
+
+        Args:
+            gray_image (png): grayskale bildet
+
+        Returns:
+            png: det nye bildet som er laget
+        """
+        
         image_height, image_width = gray_image.shape[:2]
         mask = np.zeros_like(gray_image)
         
@@ -878,7 +1072,14 @@ class CH_Bilder_Manipulator:
         return overst_Venstre
     
     def mask_im_NH (self,gray_image):
-        
+        """ gjør alt annet enn det nederst til venstre delen av ett bilde sort.
+
+        Args:
+            gray_image (png): grayskale bildet
+
+        Returns:
+            png: det nye bildet som er laget
+        """
         image_height, image_width = gray_image.shape[:2]
         mask = np.zeros_like(gray_image)
         
@@ -899,6 +1100,17 @@ class CH_Bilder_Manipulator:
         return overst_Venstre
     
     def is_Wet(self,image_path,lystall,antall=False):
+        """ Definerer om et bilde skal bli ansett som vått eller ikke. 
+
+        Args:
+            image_path (String): plasesringen til bildet som skal sjekkes. 
+            lysverdi (double): lysnivået til bildet. 
+            antall (bool, optional): Hvis antall dråper er ønsket returnet i stede for en bool 
+
+        Returns:
+            int/Bool: returnerer antall dråper hvis antall = True, 
+                    ellers returnerer en bool for om bilde blir ansett som vått eller ikke. 
+        """
         image = cv2.imread(image_path)
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # Bruk en Gaussisk blur for å redusere støy
@@ -924,6 +1136,10 @@ class CH_Bilder_Manipulator:
         return False
        
     def Confusion_matrix(self,folder_path ):
+        """
+            Lager en matrise Basert på resultatene på is_wet, is_blur og lysnivå.
+            Args: folder_path (String): pathen til mappen som skal sjekkes. 
+        """
         true_Positiv =0
         false_Positiv = 0
         true_Negativ = 0
@@ -986,146 +1202,3 @@ class CH_Bilder_Manipulator:
 
         # Vis histogrammet
         plt.show()                        
-                
-#----------------------------------Test---------------------------
-project_root = "Prosjekt"
-
-CH_Mappe_Path = os.path.join(project_root, "Resourses", "CH_bilder", "Orginal_Bilder")
-
-cropped_Mappe_Path = os.path.join(project_root, "Resourses", "CH_bilder", "mappe_cropped")
-CH_cropped_Mappe_Path = os.path.join(project_root, "Resourses", "CH_bilder", "blurred_tires_cropped")
-cropped_mb =os.path.join(project_root, "Resourses", "CH_bilder", "cropped_mb")
-cropped_mb_7 =os.path.join(project_root, "Resourses", "CH_bilder", "cropped_mb_7")
-ikke_blur =os.path.join(project_root, "Resourses", "CH_bilder", "ikke_blur")
-
-cropped_ch_blur500 =os.path.join(project_root, "Resourses", "CH_bilder", "blurred_tires_cropped","motion","500us")
-cropped_ch_blur1000 =os.path.join(project_root, "Resourses", "CH_bilder", "blurred_tires_cropped","motion","1000us")
-cropped_ch_sharp =os.path.join(project_root, "Resourses", "CH_bilder", "blurred_tires_cropped","sharp")
-
-CH_orginal_Bilder_path = os.path.join(project_root, "Resourses", "CH_bilder", "Orginal_Bilder")
-CH_MB_Bilder_path = os.path.join(project_root, "Resourses", "CH_bilder", "Lagt_til_Motion_blur")
-
-bm = CH_Bilder_Manipulator()
-
-bilde = "Prosjekt/Resourses/CH_bilder/ikke_blur/D20240121_T235334_1_WET.png"
-
-bm.Confusion_matrix(ikke_blur)
-
-#test= "Prosjekt/Resourses/CH_bilder/ikke_blur/D20240121_T235334_1.png"
-#HUSK SAMPLING
-#bm.calculate_variance_histogram_folder(cropped_Mappe_Path)
-mappe = "Prosjekt/Resourses/CH_bilder/ikke_blur"
-#print(bm.diferanse_varianse_overst_nederst(blurTo))
-obj = "Prosjekt/Resourses/Intern_database/bild_id_9.pkl"
-
-with open("Prosjekt/Resourses/Intern_database/bild_id_9.pkl", 'rb') as file:
-    # Last inn objektet fra .pkl-filen
-    bil = pickle.load(file)
-
-print(bil.motion_blur)
-
-bgr_image = cv2.imread(bilde)
-
-image_height, image_width = bgr_image.shape[:2]
-
-imgae_size = image_height*image_width
-
-# Klipp bildet fra sentrum av x-aksen
-#overst_Venstre = bm.crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
-nederst_Hoyre = bm.crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.500),int(image_width*0.3),int(image_height/2))
-#cv2.imshow('bilde',overst)
-cv2.imshow('bilde',bgr_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-dråper = bm.calculate_variance_histogram_folder(nederst_Hoyre)
-print(dråper)
-
-#print(f'retur= {bm.diferanse_varianse_overst_nederst(dekk)}')
-#bm.flytt_bilder(CH_Mappe_Path,cropped_Mappe_Path)
-#bm.multi_histogram_folder(CH_cropped_Mappe_Path)
-#bm.Confusion_matrix(ikke_blur)
-#bm.vis_blokk_varians(perf,11)
-
-#bm.se_kant_dekk(cv2.imread(blur))
-
-#----------------------Test og resultater -----------------------------#
-"""
-sammenligning av to forskjellige punkter. 
-topp og bunn
-   overst = crop_image_from_center(bgr_image, int(image_width * 0.33), int(image_height*0.10), -int(image_width * 0.04), -int(image_height*0.4)) 
-   nederst = crop_image_from_center(bgr_image,int(image_width * 0.33), int(image_height*0.33), -int(image_width * 0.04), int(image_height*0.4))
-
-    svar blur = 0.03 opp 0.026 nede 0.003 forskjell
-    for mye problemer med at noen bilder viser bakke som øker forskjellen
-    histogram fra 0.0001 til 0.04 
-
-topp og ved høyre side
-   overst = crop_image_from_center(bgr_image, int(image_width * 0.33), int(image_height*0.10), -int(image_width * 0.04), -int(image_height*0.4)) 
-    nederst = crop_image_from_center(bgr_image,int(image_width * 0.10), int(image_height*0.33), int(image_width * 0.33))
-        
-    svar blur = 0.03 oppe 0.008 høyre forskjell 0.0218
-"""
-
-
-#--------------------------lysnivå-------------------------------------
-
-"""
-Vi trenger en måte å detekte om lysnivået på bilder er for lave. FOr hvis de er for lave så vil det si at 
-bildene ikke kan brukes uansett. Via å lage ett histogram for lysnivået dette histo grammet viset at det 
-nedre nivåe var på ca 40 for bilder som er godkjent som gode nok til bruk av Ai modellen. Med tanke på 
-lukkehastighet på kameraet og blitsen som brukes, blir det tatt utgangspunkt i at 40 blir det nedre 
-lysnivået for bildene, og tresholden for lysnivået blir satt til 30 for å ha litt rom for at den kan bli lavere.
-"""
-
-
-#-------------------------Motion blur-----------------------------------
-"""
-Med disse kodene ønsker vi å finne en optimal treshold for mb (Motion Blur) detektoren. 
-Dette gjør vi ved å lage to mapper, en med orginale bilder uten Mb og en mappe hvor de 
-samme bildene har blit gitt mb. Så lage histogram for variansen av begge disse mappene,
-så ut regne den optimale tresholderen som skiller orginal mappen og mb mappen.
-
-For mappen med de orgianel bildene til counting hero ente variance histogrammet 
-opp med verdier på mellom ca 0.045 - 0.08. 
-
-En del av problemstillingen her blir å finne en riktig mb verdi som gir relevante resultater.
-lag_Bilde_Mb ble først kjørt med tilfeldige verdier fra 1- 19 md økning på +1 
-ved testing av Variancen på disse bildene, endte noen av dem opp med verdier langt 
-under 0.01. Disse verdiene er irrelevante siden de er så langt i fra den nedre grensen 
-til orginalbildene. 
-
-Ved å teste ett bilde så har fått verdien sin på 2 får vi varianse resultat på 0.0048 
-som fortsatt er langt under relevant grense. så nye mb bilder blir laget med verdier i fra 
-1.1- 1.8 med økning på 0.1 
-
-Etter en rekke problemstillinger, ble det laget en ny bluring metode. resultatene er under. 
-"""
-
-# med nyere blurring metode:
-
-"""
-Ved testing av bluring av ett bilde, med forskjellig kernel verdi ser vi at kernel verdi på 5
-starter å gi oss merkbar bluring på bildet. Å hvis vi går på en kernel verdi på over 15 så blir 
-bluringen veldig høy. derfor kjøres det en test hvor bildene blir bluret med en random kernel 
-mellom 5 og 15. 
-
-snitt variansen til orginal bildene er på 0.0509 mens MB bilder er på 0.0463
-Dette er ikke en veldig stor variasjon. ved å se på histogrammen ser vi også at vi ikke kan velge
-en treshold som skiller nøye mellom mb bilder og ikke mb bilder. Siden det er så mange variabler 
-som påvirker variasjonen (vått, farge på bil, bil størrelse, dekk størrelse, osv). 
-For å få en god treshold må vi fjerne disse variablene mest mulig først. Ettersom våres prioritering
-er dekkene på bilen, må vi bygge opp ett system som kutter bilde slik at kun dekket er på bildet. 
-Vi gjør dette manuelt i starten, med en tanke om at vi skal ha en ai modell som gjør dette automatisk senere
-
-Dette vil skape ett nytt problem med piksel tetthet. Dette kan vi prøve å løse med sampling, men 
-vi tester først uten.
-
-ved første kjøring av croppede bilder. (75stk) så var det tre bilder som skilte seg veldig ut. 
-disse hadde en lys styrke som var veldig lav. på 42, 38 og 37. Ved å lage ett histogram for lys
-med samme bildene, så er det en tydlig sammenheng mellom bildene. 
-
-
-kondusksjon
-numpy -> blokfilter??? filter 
-"""
