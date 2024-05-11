@@ -1199,7 +1199,3 @@ class CH_Bilder_Manipulator:
 
         # Vis histogrammet
         plt.show()                        
-
-im = cv2.imread('Prosjekt/Resourses/intern_database_bilder/D20230324_T134042_0.png')
-gray_image = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-print(gray_image)

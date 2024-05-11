@@ -4,13 +4,13 @@ import pickle
 
 class Bil:
     # Konstruktør bil, bør legge til 2 bilde variabler, en for prosessert bilder, en uten.
-    def __init__(self, sted, orginal_bilder, redigerte_bilder=None, ID=None, tid=None, dato=None, motion_blur=False, lav_belysning=False, vaatt_dekk=False):
+    def __init__(self, sted, original_bilder, korrigerte_bilder=None, ID=None, tid=None, dato=None, motion_blur=False, lav_belysning=False, vaatt_dekk=False):
         """_summary_
 
         Args:
             sted (String): Stedet bildet er tatt.
-            orginal_bilder (list[String]): en liste med plasseringen av bildene for denne bilen
-            redigerte_bilder (List[String], optional): Liste med plasseringen til evenutelle korigerte bilder. Defaults to None.
+            original_bilder (list[String]): en liste med plasseringen av bildene for denne bilen
+            korrigerte_bilder (List[String], optional): Liste med plasseringen til evenutelle korrigerte bilder. Defaults to None.
             ID (int, optional): Iden til bildet. Defaults to None.
             tid (String, optional): didspunktet blde ble tatt. Defaults to None.
             dato (String, optional): Datoen bilde ble tatt. Defaults to None.
@@ -22,8 +22,8 @@ class Bil:
         self.tid = tid if tid is not None else "Default_tid"
         self.dato = dato if dato is not None else "Default_dato"
         self.sted = sted
-        self.orginal_bilder = orginal_bilder if orginal_bilder is not None else []
-        self.redigerte_bilder = redigerte_bilder if redigerte_bilder is not None else []
+        self.original_bilder = original_bilder if original_bilder is not None else []
+        self.korrigerte_bilder = korrigerte_bilder if korrigerte_bilder is not None else []
         self.motion_blur = motion_blur
         self.lav_belysning = lav_belysning
         self.vaatt_dekk = vaatt_dekk
@@ -57,7 +57,7 @@ class Bil:
         Returns:
             png: Bilde som blir hentet.
         """
-        if self.orginal_bilder:
-            return self.orginal_bilder[0]
+        if self.original_bilder:
+            return self.original_bilder[0]
         else:
             return None

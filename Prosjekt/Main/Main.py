@@ -8,7 +8,8 @@ web = Nettside()
 
 "hvis det er ønsket å kjøre koden med Video slicer fjern # foran #Video_Slicer.start() rett under "
 "så sett True i Prossesering.lag_alle_bil_objekt(True)"
-"Hvis det er filer i Intern_database mappen, slett disse hvis kun nye resultater er ønsket."
+"Hvis det er filer i Intern_database mappen og Intern_database_bilder mappen,"
+"slett disse filnene/bildene hvis kun nye resultater er ønsket."
 
 #Video_Slicer.start()
 Prossesering.lag_alle_bil_objekt()

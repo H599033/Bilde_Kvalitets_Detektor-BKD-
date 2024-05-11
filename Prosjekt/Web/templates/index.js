@@ -106,12 +106,12 @@ $(document).ready(function () {
     
             var imgCell = $("<td></td>");
             var select = $("<select class='image-selector' style='position: absolute; top: 0; right: 0;'></select>");
-            $.each(value.orginal_bilder, function (i, img) {
+            $.each(value.original_bilder, function (i, img) {
                 select.append("<option value='" + img + "'>Image " + (i + 1) + "</option>");
             });
             var imgDiv = $("<div style='position: relative;'></div>");
-            var image = $("<img class='selected-image' src='" + value.orginal_bilder[0] + "' alt='Original Bilder'>");
-            var downloadLink = $("<a class='download-link' style='position: absolute; bottom: 0; right: 0;' href='" + value.orginal_bilder[0] + "' download>Download</a>");
+            var image = $("<img class='selected-image' src='" + value.original_bilder[0] + "' alt='Original Bilder'>");
+            var downloadLink = $("<a class='download-link' style='position: absolute; bottom: 0; right: 0;' href='" + value.original_bilder[0] + "' download>Download</a>");
             imgDiv.append(image);
             imgDiv.append(select);
             imgDiv.append(downloadLink);
@@ -120,11 +120,11 @@ $(document).ready(function () {
     
             var redImgCell = $("<td></td>");
             var redSelect = $("<select class='image-selector' style='position: absolute; top: 0; right: 0;'></select>");
-            $.each(value.redigerte_bilder, function (i, img) {
+            $.each(value.korrigerte_bilder, function (i, img) {
                 redSelect.append("<option value='" + img + "'>Image " + (i + 1) + "</option>");
             });
             var redImgDiv = $("<div style='position: relative;'></div>");
-            redImgDiv.append("<img class='selected-image' src='" + value.redigerte_bilder[0] + "' alt='Ok'>");
+            redImgDiv.append("<img class='selected-image' src='" + value.korrigerte_bilder[0] + "' alt='Ok'>");
             redImgDiv.append(redSelect);
             redImgCell.append(redImgDiv);
             row.append(redImgCell);

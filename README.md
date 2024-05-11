@@ -2,6 +2,7 @@
  Nettside som kvalifiserer kvaliteten og korigerer bilder for bruk av dekk gjenkjenning
 
 
+
 Innhold i denne filen 
 
 1. Hvem har laget dette prosjektet. 
@@ -18,15 +19,17 @@ Innhold i denne filen
 
    1. ----------------------------Nødvendige innstalasjoner--------------
 
-        1. Python 3.11.7 https://www.python.org/download
-        2. gå på View -> comandpallet -> Python create envierment -> venv -> versjn 3.11.7
-            Før neste del i terminal HUSK å åpne Python terminal Ikke Power shel. sjekk med å skrive "python --version"
-        3. "pip install opencv-python" Laster ned cv2 for video_slicer
-        4. "pip install torch" for pytorch
-        5. "pip install torchvision"
-        6. "pip install flask" for flask Rammeverk for web.
-        7. "pip install matplotlib"
-        8. "pip install pytest"  For tester.
+        Python 3.11.7 https://www.python.org/download
+            gå på View -> commandpallet -> Python create envierment -> venv -> versjon 3.11.7 -> requirements.txt
+                Før neste del i terminal HUSK å åpne Python terminal Ikke Power shel. sjekk med å skrive "python --version"
+                
+            Dersom installasjon av requirements.txt ikke fungerer, er det kommandoene under som må kjøres:
+            "pip install opencv-python" Laster ned cv2 for video_slicer
+            "pip install torch" for pytorch
+            "pip install torchvision"
+            "pip install flask" for flask Rammeverk for web.
+            "pip install matplotlib"
+            "pip install pytest"  For tester.
         
     
     2. -------------------------------TEST-------------------------------

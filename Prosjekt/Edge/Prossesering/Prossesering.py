@@ -98,7 +98,7 @@ def sjekk_kvalitet(bil):
            bil.motion_blur = True
            #kjør debluring           
            #TEMP legger bare til ett bilde i listen.
-           bil.redigerte_bilder.append(bil.hent_bilde_en())
+           bil.korrigerte_bilder.append(bil.hent_bilde_en())
     if(_vann.is_Wet(bil.hent_bilde_en(),lysverdi)):
         bil.vaatt_dekk = True
 
@@ -188,7 +188,7 @@ def copy_image_to_folder(original_image_path, destination_folder):
         """lager en kopi av ett bildet og plasserer det i en ny mappe
 
         Args:
-            original_image_path (String): Orginal pathen til bildet
+            original_image_path (String): Original pathen til bildet
             destination_folder (String): Pathen til mappen kopi bildet skal plasseres i
         """
     # Sjekk om destinasjonsmappen eksisterer, hvis ikke, opprett den
