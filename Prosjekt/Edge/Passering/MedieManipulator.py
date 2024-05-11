@@ -6,8 +6,7 @@ import torch
 import matplotlib.pyplot as plt
 import pickle
 import sys
-sys.path.append('Prosjekt/Edge')
-from Objekt import Bil
+
 
 
 class CH_Bilder_Manipulator:
@@ -121,7 +120,6 @@ class CH_Bilder_Manipulator:
              
     # Denne funksjunen utregner variansen til bilde. 
     # Brukes for å utregne hvilken treshold som skal brukes for Mb detektoren
-    
     def bilde_variance(self, image):
         """Sjekker variasjonene i pikslene på ett bilde.
 
@@ -278,7 +276,6 @@ class CH_Bilder_Manipulator:
         # Kopier originalbildet til destinasjonsmappen
         shutil.copyfile(original_image_path, destination_path)
 
-    
     def multi_histogram_folder(self, folder_path):
         """ Lager ett histogram med flere lister som får hver sin farge i histogrammet        
             
@@ -422,8 +419,8 @@ class CH_Bilder_Manipulator:
                 
                 image_height, image_width = image.shape[:2]
                 
-                overst_Venstre = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))            
-                nederst_Hoyre = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(image_width*0.3),int(image_height/2))
+                overst_Venstre = self.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))            
+                nederst_Hoyre = self.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(image_width*0.3),int(image_height/2))
                         
                 gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 # Bruk en Gaussisk blur for å redusere støy
@@ -501,8 +498,8 @@ class CH_Bilder_Manipulator:
             _, thresholded = cv2.threshold(image, 240, 255, cv2.THRESH_BINARY)
             thresholded = np.uint8(thresholded)
         else:
-            overst_Venstre = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
-            nederst_Hoyre = bm.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.700),int(image_width*0.3),int(image_height/2))
+            overst_Venstre = self.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.500),int(-image_width*0.5),int(-image_height/2))
+            nederst_Hoyre = self.crop_image_from_center(image, int(image_width * 0.4), int(image_height*0.700),int(image_width*0.3),int(image_height/2))
             
             _, thresholded_OV = cv2.threshold(overst_Venstre, nedre_grense, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             thresholded_OV = np.uint8(thresholded_OV)
@@ -1202,3 +1199,7 @@ class CH_Bilder_Manipulator:
 
         # Vis histogrammet
         plt.show()                        
+
+im = cv2.imread('Prosjekt/Resourses/intern_database_bilder/D20230324_T134042_0.png')
+gray_image = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+print(gray_image)

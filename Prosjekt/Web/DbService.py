@@ -6,7 +6,7 @@ sys.path.append('Prosjekt/Edge')
 project_root = "Prosjekt"
 
 # Oppdater stien ved å bruke os.path.join
-_intern_database = os.path.join(project_root, "Resourses", "Intern_database")
+_intern_database = os.path.join(project_root, "Resourses", "Intern_database_objekt")
 
 def hent_alle_biler():
     """ henter alle bilene som er lagret i bilde path listen

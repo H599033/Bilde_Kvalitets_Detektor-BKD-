@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
-        "./Pipeline/Source/Objekt"
+        "./Pipeline/Source/Objekt",
+        "./Prosjekt/Edge"
     ]
 }

@@ -24,7 +24,8 @@ _vann = Vann_detektor()
 _output_mappe_sti = os.path.join("Prosjekt", "Resourses", "Output_sources")
 _CH_bilder_mappe_cropped = os.path.join("Prosjekt", "Resourses", "CH_bilder","CH_mappe_cropped")
 # Her kan vi endre hvor "databasen" våres er lagret. # kanskje litt dumt å ha den som en del av pipeline?
-_Intern_database_sti = os.path.join("Prosjekt", "Resourses", "Intern_database")
+_Intern_database_sti = os.path.join("Prosjekt", "Resourses", "Intern_database_objekt")
+_Intern_database_bilder_sti = os.path.join("Prosjekt", "Resourses", "Intern_database_bilder")
 
 #Husk å implementer!!!
 _Intern_database_bilder_sti = os.path.join("Prosjekt", "Resourses", "Intern_database_bilder")
@@ -125,9 +126,13 @@ def lag_bilde_sti_liste(mappe_sti):
     Returns:
         List[str]: listen med stiene til bildene
     """
+    list = []    
     bildeliste = os.listdir(mappe_sti)
-    bildeliste = [os.path.join(mappe_sti, fil) for fil in bildeliste if fil.lower().endswith(('.jpg', '.jpeg', '.png'))]
-    return bildeliste
+    for element in bildeliste:                  
+        if element.lower().endswith(('.jpg', '.jpeg', '.png')):
+            path = os.path.join(mappe_sti,element)                    
+            list.append(copy_image_to_folder(path,_Intern_database_bilder_sti))
+    return list
 
 def ny_objekt_fil(inter_database_sti,bil_ID ):
     """ lager en pkl fil for bilobjektet og plasserer den i en mappe
@@ -178,4 +183,23 @@ def finn_Bilde(image_path):
     image = cv2.imread(image_path)
     # Gjør bilde til en torch tensor
     return F.to_tensor(image).unsqueeze(0)
+    
+def copy_image_to_folder(original_image_path, destination_folder):
+        """lager en kopi av ett bildet og plasserer det i en ny mappe
+
+        Args:
+            original_image_path (String): Orginal pathen til bildet
+            destination_folder (String): Pathen til mappen kopi bildet skal plasseres i
+        """
+    # Sjekk om destinasjonsmappen eksisterer, hvis ikke, opprett den
+        if not os.path.exists(destination_folder):
+            os.makedirs(destination_folder)
+
+        # Hent filnavn fra originalbildet
+        filename = os.path.basename(original_image_path)
+        # Lag destinasjonens filbane
+        destination_path = os.path.join(destination_folder, filename)
+        # Kopier originalbildet til destinasjonsmappen
+        shutil.copyfile(original_image_path, destination_path)        
+        return destination_path
     

@@ -1,15 +1,21 @@
 import torch
-import torch.nn.functional as F
 import cv2
-from Detektorer.Detektor_service.Detektor_service import Detektor_service
-from Detektorer.Lys.Lys_Detektor import Lys_Detektor
 
-_LD = Lys_Detektor()
-_DS = Detektor_service
 
 class Motion_Blur_Detektor():
     def crop_image_from_center(self,image, crop_width, crop_height, offset_x=0, offset_y=0):
-        
+        """tar inn ett bilde og deler det opp basert på inn verdiene
+
+        Args:
+            image (png): Selve bilde som skal bli delt opp
+            crop_width (double): hvor brett bildet skal være
+            crop_height (double): hvor høye bilde skal være
+            offset_x (int, optional): hvor langt til vertikalt fra senter av orginal bilde det nye skal lages Defaults to 0.
+            offset_y (int, optional): hvor langt til hirisontalt fra senter av orginal bilde det nye skal lages . Defaults to 0.
+
+        Returns:
+            png: det nye bildet som er kuttet opp fra det orginale. 
+        """
         # Hent dimensjonene til bildet
         image_height, image_width = image.shape[:2]
 
@@ -31,14 +37,16 @@ class Motion_Blur_Detektor():
     _varianse_treshold = 0.05
     def diferanse_varianse_overst_nederst(self, image,snitt=False):
         """
-        This function convolves a grayscale image with
-        a Laplacian kernel and calculates its variance.
+            Dar inn ett bilde og deler det opp i tre for å finne variansen til de forskjellige delene av dekket. 
+        Args:
+            image (png): Bilde som skal deles opp
+            snitt (bool, optional): Hvis snitt blir satt til True returnerer den snitt verdien til de tre bildene. 
+
+        Returns:
+            Double: Returnere enten snitt variasjonen til alle de tre oppdelte bildene. 
+                    eller forskjellen mellom den øverste og nederste delen av dekket. 
+                    Endres basert på om snitt fra input er false eller true
         """
-        #bgr_image = image
-
-        # Bruk Gaussian blur for å redusere støy
-
-     
         image_height, image_width = image.shape[:2]
         
         # Klipp bildet fra sentrum av x-aksen
@@ -62,9 +70,15 @@ class Motion_Blur_Detektor():
         return abs(variance_over/variance_nedre)  
 
     def is_blur(self,image_path,Lysverdi,verdi = False):
-        """
-        This function convolves a grayscale image with
-        a Laplacian kernel and calculates its variance.
+        """Definerer om bildet som blir gitt har motion blur eller ikke. 
+        Args:
+            image_path (String): Pathen til bildet som skal analyseres
+            Lysverdi (int): Hva lysnivået til bildet er
+            verdi (bool, optional): Hvis verdi blir satt til True returnerer den verdien til resultatet i stede for en bool
+
+        Returns:
+            double/Bool: Hvis verdi = True returnerer den verdien av resultatet. 
+                         Hvis false returnerer den bool verdien for om bilde har motion blur eller ikke. 
         """
         image = cv2.imread(image_path)
 

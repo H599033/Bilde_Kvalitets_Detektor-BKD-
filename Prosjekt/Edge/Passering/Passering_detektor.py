@@ -18,7 +18,7 @@ _tomm_ny_mappe = True
 _threshold = 0.9
 #lager ny mappe for hver bil
 def lag_ny_mappe (output_path):
-    """ Lager en ny mappe for nye bil objekt. hvis det ikke allerede eksistere en mappe me det ønskede navnet
+    """ Lager en ny mappe for nye bil objekt. 
 
     Args:
         output_path (str): pathen til mappen de nye mappene skal plasseres i.
@@ -41,6 +41,14 @@ def lag_ny_mappe (output_path):
     return ny_mappe_sti
 
 def velg_mappe(output_path):
+    """finner en mappe og plasere bildene som skal lagres. lager ny hvis en med ønsket navn ikke finnes. 
+
+    Args:
+        output_path (str): pathen til mappen de skal plaseres
+
+    Returns:
+        str: stien til den nye plasseringen.
+    """
     mappe_plassering = os.path.abspath(output_path )+ "/Bilnr_" +str(_bilnr)
     if os.path.exists(mappe_plassering):
         return  mappe_plassering
@@ -55,7 +63,15 @@ def velg_mappe(output_path):
 # from matplotlib.backends.backend_agg import FigureCanvasAgg
 # import numpy as np
 def lag_bilde_med_boks(image, bboxes):
+    """ lager ett nytt bildet med en boks rundt bilden som er detektert
 
+    Args:
+        image (png): bildet som skal sjekkes for en bil
+        bboxes (int): størrelse på boks.
+
+    Returns:
+        png: det nye bildet som er laget.
+    """
     fig, ax = plt.subplots(1)
     ax.imshow(image)
 
@@ -76,6 +92,12 @@ def lag_bilde_med_boks(image, bboxes):
 
 # Funksjon for å gjenkjenne og lagre bilder med biler
 def detect_and_save(image_path, output_path):
+    """ går i gjennom bilder i en video, og lagrer bildet hvis det er en bil der.
+
+    Args:
+        image_path (str): pathen til videoen som skal analyseres
+        output_path (str): pathen hvor bildene skal plasseres
+    """
     global _tomm_ny_mappe
     # Last inn bilde
     image = Image.open(image_path).convert("RGB")
