@@ -12,8 +12,7 @@ _ld = Lys_Detektor()
 vann_18 = os.path.join("Prosjekt", "Resourses", "CH_bilder","mappe_cropped","D20240121_T153729_0_MB.png")
 vann_33 = os.path.join("Prosjekt", "Resourses", "CH_bilder","mappe_cropped","D20240315_T105856_1_WET_MB.png")
 
-
-class TestNothing(unittest.TestCase):
+class TestVann_Detektor(unittest.TestCase):
     
     def test_detect_water_droplets(self):
         vann_18_ = cv2.imread(vann_18)

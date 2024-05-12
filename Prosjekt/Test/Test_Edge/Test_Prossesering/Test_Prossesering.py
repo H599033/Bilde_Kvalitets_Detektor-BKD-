@@ -11,7 +11,8 @@ _bilde_mapppe_mb_wet = os.path.join("Prosjekt", "Resourses", "CH_bilder","CH_map
  
 _Intern_database_sti = os.path.join("Prosjekt", "Resourses", "Intern_database_objekt")
 _Intern_database_bilder_sti = os.path.join("Prosjekt", "Resourses", "Intern_database_bilder")
-class TestNothing(unittest.TestCase):
+
+class TestProssering(unittest.TestCase):
     
     
     def test_dato_Og_tid(self):
@@ -46,13 +47,16 @@ class TestNothing(unittest.TestCase):
     def test_lag_bilde_sti_liste(self):
         _bilde_mapppe = os.path.join("Prosjekt", "Resourses", "CH_bilder","CH_mappe_cropped","D20231201_T062539")
         
+        _forventet_sti_en = os.path.join("Prosjekt", "Resourses", "Intern_database_bilder","D20231201_T062539_1.png")
+        _forventet_sti_to = os.path.join("Prosjekt", "Resourses", "Intern_database_bilder","D20231201_T062539_0.png")
+        
         Liste = Prossesering.lag_bilde_sti_liste(_bilde_mapppe)
         
         sti_en = Liste[0]
         sti_to = Liste[1]
         
-        self.assertEqual(sti_en,"Prosjekt/Resourses/Intern_database_bilder/D20231201_T062539_1.png")
-        self.assertEqual(sti_to,"Prosjekt/Resourses/Intern_database_bilder/D20231201_T062539_0.png")
+        self.assertEqual(sti_en,_forventet_sti_en)
+        self.assertEqual(sti_to,_forventet_sti_to)
     def test_ny_objekt_fil(self):
         forventet = "Prosjekt/Resourses/Intern_database_objekt/bild_id_1.pkl"
         
