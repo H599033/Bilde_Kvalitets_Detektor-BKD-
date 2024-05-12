@@ -202,4 +202,5 @@ def copy_image_to_folder(original_image_path, destination_folder):
         # Kopier originalbildet til destinasjonsmappen
         shutil.copyfile(original_image_path, destination_path)        
         return destination_path
-    
+
+        
