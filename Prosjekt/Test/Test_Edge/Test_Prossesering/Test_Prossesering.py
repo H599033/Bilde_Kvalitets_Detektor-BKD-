@@ -57,8 +57,9 @@ class TestProssering(unittest.TestCase):
         
         self.assertEqual(sti_en,_forventet_sti_en)
         self.assertEqual(sti_to,_forventet_sti_to)
+        
     def test_ny_objekt_fil(self):
-        forventet = "Prosjekt/Resourses/Intern_database_objekt/bild_id_1.pkl"
+        forventet = os.path.join("Prosjekt", "Resourses", "Intern_database_objekt","bild_id_1.pkl")
         
         resultat = Prossesering.ny_objekt_fil(_Intern_database_sti,"1")
         
