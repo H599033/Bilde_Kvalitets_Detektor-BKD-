@@ -1,55 +1,36 @@
-# Bilde_Kvalitets_Detektor-BKD-
- Nettside som kvalifiserer kvaliteten og korigerer bilder for bruk av dekk gjenkjenning
+##### Bildekvalitetsdetektor #####
+
+Innhold i denne filen:
+Hvem har laget dette prosjektet.
+Nødvendige installasjoner og oppsett
+Kjøring
 
 
+---------------- Hvem har laget dette prosjektet-----------------------
 
-Innhold i denne filen 
-
-1. Hvem har laget dette prosjektet. 
-2. oppsett for kjøring av koden. 
-3. Info om koden
-4. Undersøkelser og resultater. 
-
-1. --------- Hvem har laget dette prosjektet------------------------------------
+    Prosjektet er utviklet av Øyvind Holter, Bjørn Ellingsen og Håkon Lervåg.
 
 
+---------------- Nødvendige installasjoner og oppsett -----------------
 
-
-2. ---------oppsett for kjøring av koden. --------------------------------------
-
-   1. ----------------------------Nødvendige innstalasjoner--------------
-
-        Python 3.11.7 https://www.python.org/download
-            gå på View -> commandpallet -> Python create envierment -> venv -> versjon 3.11.7 -> requirements.txt
-                Før neste del i terminal HUSK å åpne Python terminal Ikke Power shel. sjekk med å skrive "python --version"
-                
-            Dersom installasjon av requirements.txt ikke fungerer, er det kommandoene under som må kjøres:
-            "pip install opencv-python" Laster ned cv2 for video_slicer
-            "pip install torch" for pytorch
-            "pip install torchvision"
-            "pip install flask" for flask Rammeverk for web.
-            "pip install matplotlib"
-            "pip install pytest"  For tester.
-        
     
-    2. -------------------------------TEST-------------------------------
-        1. 
-         Før testing sørg først for at mappen Prosjekt.Resourses inne holder de 4 mappene. Input_sources , Intern_database, Output_source og Temp_source. Hvis de ikke eksiterer lag ny mappe med disse navnene. 
+Python 3.11.7 https://www.python.org/downloads/release/python-3117/
 
-        2.
-         kjør så Video_slicer.py først. (Prosjekt/Edge/Passering)
-         Kjør den til du har minst ett bilde i "Resourses.Output_source". Helst til du har flere mapper i "Output_source"
-         avbry kjøring med (control c) i terminalen
+    
+Lag et python-miljø:
+Trykk på kommandolinjen på toppen i midten av VSCode
+Skriv: > Python: Create Environment
+Velg Venv -> Python 3.11.7 -> requirements.txt -> Ok
+I kommandolinjen, skriv: > Terminal: Create new Terminal
+Pass på at denne terminalen har python installert med å skrive python --version
+Python versjon 3.11.7 skal komme opp
+Pass på at denne terminalen har pip installasjonene installert med å skrive pip list
+Det skal komme opp mange forskjellige pip installasjoner. Dersom det er få skriv installasjonene,    manuelt slik det er visst i punkt 4.
+Dersom installasjon av requirements.txt ikke fungerer, er det kommandoene under som må kjøres:"pip install opencv-python""pip install torch""pip install torchvision""pip install flask""pip install matplotlib""pip install pytest"
 
-        3.
-         kjør så klassen Prossesering.py (Prosjekt/Edge/Prossesering)
-         Ved vellyket kjøring burde ett bilde bli vist frem. og mappen "Resourses.Intern_database" -
-         burde nå inneholde like mange filer som det er mapper inne i "Output_source"
+------------------------------- Kjøring -------------------------------
+Dersom miljøet er satt opp riktig skal det nå være så enkelt som å trykke kjør i main.
 
-        4.
-         Nå kan eventuelt DbService.py bli kjørt. (Prosjekt/Web)
+Dersom man får "FileNotFoundError" eller "ModuleNotFoundError" står det i kapittel 8 av systemdokumentasjonen hva du må gjøre.
 
-
-3. ---------------------------------Info om koden-------------------------------
-
-1. Passering mappen inne holder to koder for å teste å ta inn live video. Denne kan bli ansett som midler tidig. 
+Ved en vellykket kjøring skal det ta noen sekunder for prosesseringen til å gå gjennom alle bildene, og man skal bli gitt en link i terminalen. Gå via denne linken for å komme til nettsiden.

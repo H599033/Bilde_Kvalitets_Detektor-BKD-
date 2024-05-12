@@ -8,7 +8,6 @@ class Lys_Detektor():
     model = fasterrcnn_resnet50_fpn(weights='COCO_V1')
     model.eval()
 
-
     def sjekk_lys_Hele_Bildet(self,image_path):
         """ sjekker lysnivået til et bilde
 
@@ -69,7 +68,6 @@ class Lys_Detektor():
         bgr_image = cv2.imread(image_path)
         
         image_height, image_width = bgr_image.shape[:2]
-        imgae_size = image_height*image_width
         # Klipp bildet fra sentrum av x-aksen
         overst = self.crop_image_from_center(bgr_image, int(image_width * 0.4), int(image_height*0.070), -int(image_width * 0.20), -int(image_height*0.4))
         nederst = self.crop_image_from_center(bgr_image,int(image_width * 0.33), int(image_height*0.07), -int(image_width * 0.09), int(image_height*0.44)) 
@@ -78,13 +76,7 @@ class Lys_Detektor():
         ov= overst.mean()
         nv = nederst.mean()
         hv= hoyre.mean()
-        return (ov+nv+hv)/3
-        if(overst.mean()>nederst.mean() and overst.mean()>hoyre.mean()):
-            return overst.mean()
-        if(nederst.mean()>overst.mean() and nederst.mean() > hoyre.mean()):
-            return nederst.mean()
-        return hoyre.mean()
-        
+        return int((ov+nv+hv)/3)
     
     def Lysnivå_for_lav(self,image_path):
         """ metode for sjekk om lysnivå er godkjent eller ikke.
@@ -93,4 +85,3 @@ class Lys_Detektor():
             bool: sjekker om resultat til Lavt_Lysnivå_allesider_dekk er over eller under terskel.
         """
         return self.Lavt_Lysnivå_allesider_dekk(image_path)< self._LysNivå_Grense_Fult_bilde
-

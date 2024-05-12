@@ -1199,3 +1199,5 @@ class CH_Bilder_Manipulator:
 
         # Vis histogrammet
         plt.show()                        
+
+

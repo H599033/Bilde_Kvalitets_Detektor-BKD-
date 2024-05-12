@@ -1,8 +1,9 @@
 import torch
 import cv2
 
-
 class Motion_Blur_Detektor():
+    _varianse_treshold = 0.05
+    
     def crop_image_from_center(self,image, crop_width, crop_height, offset_x=0, offset_y=0):
         """tar inn ett bilde og deler det opp basert på inn verdiene
 
@@ -33,8 +34,7 @@ class Motion_Blur_Detektor():
         cropped_image = image[start_y:end_y, start_x:end_x]
         
         return cropped_image
-
-    _varianse_treshold = 0.05
+    
     def diferanse_varianse_overst_nederst(self, image,snitt=False):
         """
             Dar inn ett bilde og deler det opp i tre for å finne variansen til de forskjellige delene av dekket. 
@@ -64,7 +64,6 @@ class Motion_Blur_Detektor():
 
         variance_hoyre = tensor_image_hoyre.var()
         
- 
         if snitt:
             return variance_over+variance_nedre+variance_hoyre / 3
         return abs(variance_over/variance_nedre)  
@@ -97,7 +96,7 @@ class Motion_Blur_Detektor():
             #print(f'Lav lys verdi = {image_path}')
             return True
         
-        
         if(verdi):
             return varianse
-        return False  
+        return False 
+    
