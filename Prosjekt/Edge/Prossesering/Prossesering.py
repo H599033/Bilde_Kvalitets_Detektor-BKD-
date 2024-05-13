@@ -144,6 +144,9 @@ def ny_objekt_fil(inter_database_sti,bil_ID ):
     Returns:
         str: pathen til den nyre filen
     """
+    if not os.path.exists(inter_database_sti):
+        os.makedirs(inter_database_sti)
+        
     filnavn = f"bild_id_{bil_ID}.pkl"
     filbane = os.path.join(inter_database_sti, filnavn)
     return filbane
