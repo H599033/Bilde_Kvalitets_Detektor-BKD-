@@ -30,7 +30,6 @@ class Bil:
 
     def lagre_til_fil(self, filnavn):
         """Tar ett objekt og lagrer det til en fil.
-
         Args:
             filnavn (String): Navnet filen skal få
         """

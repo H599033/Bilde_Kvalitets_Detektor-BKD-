@@ -11,7 +11,7 @@ _ls = Lys_Detektor()
 mb_07578 = os.path.join("Prosjekt", "Resourses", "CH_bilder","mappe_cropped","D20240121_T153729_0_MB.png")
 ok_2_0734 = os.path.join("Prosjekt", "Resourses", "CH_bilder","mappe_cropped","D20230324_T134219_0_Ok.png")
 
-class TestNothing(unittest.TestCase):
+class Test_Motion_Blur(unittest.TestCase):
   
     def test_diferanse_varianse_overst_nederst(self):
         im_var_2_0734 = cv2.imread(mb_07578)
