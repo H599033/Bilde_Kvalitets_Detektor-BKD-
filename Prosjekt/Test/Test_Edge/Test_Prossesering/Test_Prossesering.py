@@ -52,8 +52,9 @@ class TestProssering(unittest.TestCase):
         
         Liste = Prossesering.lag_bilde_sti_liste(_bilde_mapppe)
         
-        sti_en = Liste[0]
-        sti_to = Liste[1]
+        #1 og 0 under må byttes på mac.
+        sti_en = Liste[1]
+        sti_to = Liste[0]
         
         self.assertEqual(sti_en,_forventet_sti_en)
         self.assertEqual(sti_to,_forventet_sti_to)
